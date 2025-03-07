@@ -1,0 +1,5 @@
+# App Info
+
+application:
+  title: CashFlow-API-Auth
+  version: @project.version@
