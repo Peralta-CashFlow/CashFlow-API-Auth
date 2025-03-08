@@ -13,5 +13,6 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      packages: read
     with:
       sonar_project_key: ${{ vars.SONAR_PROJECT_KEY }}
