@@ -14,4 +14,4 @@ jobs:
       contents: read
       pull-requests: write
     with:
-      sonar_project_key: ${{ secrets.SONAR_TOKEN }}
+      sonar_project_key: ${{ vars.SONAR_PROJECT_KEY }}
