@@ -16,3 +16,4 @@ jobs:
       packages: read
     with:
       sonar_project_key: ${{ vars.SONAR_PROJECT_KEY }}
+    secrets: inherit
