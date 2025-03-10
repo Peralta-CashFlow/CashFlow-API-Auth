@@ -3,7 +3,3 @@
 application:
   title: CashFlow-API-Auth
   version: @project.version@
-
-# Sonar
-sonar:
-  exclusions: ".github"

@@ -15,6 +15,11 @@
         <sonar.organization>peralta-cashflow</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.qualitygate.wait>true</sonar.qualitygate.wait>
+        <sonar.exclusions>
+            .github,
+            **/AuthApplication.java
+            **/test/**
+        </sonar.exclusions>
     </properties>
 
     <parent>
