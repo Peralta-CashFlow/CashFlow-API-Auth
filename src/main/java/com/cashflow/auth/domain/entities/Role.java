@@ -3,7 +3,9 @@ package com.cashflow.auth.domain.entities;
 
 import com.cashflow.core.domain.enums.RoleEnum;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serial;
@@ -11,6 +13,8 @@ import java.io.Serializable;
 
 @Entity
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tb_role")
 public class Role implements GrantedAuthority, Serializable {
     @Serial
