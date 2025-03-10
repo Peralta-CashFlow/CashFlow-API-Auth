@@ -19,7 +19,7 @@
         <sonar.qualitygate.wait>true</sonar.qualitygate.wait>
         <sonar.exclusions>
             .github,
-            **/AuthApplication.java
+            **/AuthApplication.java,
             **/test/**
         </sonar.exclusions>
     </properties>
