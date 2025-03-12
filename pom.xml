@@ -78,10 +78,17 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- DataBase -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>9.2.0</version>
+        </dependency>
+
         <!-- CashFlow -->
         <dependency>
             <groupId>com.peralta.cashflow</groupId>
-            <artifactId>org.cashflow.auth</artifactId>
+            <artifactId>cashflow-auth</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
