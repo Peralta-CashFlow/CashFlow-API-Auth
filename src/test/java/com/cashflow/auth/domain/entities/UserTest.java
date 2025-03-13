@@ -1,7 +1,7 @@
 package com.cashflow.auth.domain.entities;
 
+import com.cashflow.auth.core.domain.enums.RoleEnum;
 import com.cashflow.auth.domain.templates.entities.UserTemplates;
-import com.cashflow.core.domain.enums.RoleEnum;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

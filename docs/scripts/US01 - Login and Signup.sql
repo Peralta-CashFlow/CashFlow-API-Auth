@@ -31,7 +31,9 @@ VALUES (1, 1);
 -- User table creation
 CREATE TABLE tb_user (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(30) NOT NULL,
+    first_name VARCHAR(30) NOT NULL,
+    last_name VARCHAR(30) NULL,
+    email VARCHAR(100) NOT NULL,
     password VARCHAR(255) NULL,
     account_type VARCHAR(15) NOT NULL,
     profile BIGINT NOT NULL,

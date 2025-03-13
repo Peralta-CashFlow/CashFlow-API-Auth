@@ -7,7 +7,9 @@ public class UserTemplates {
     public static User getUser() {
         return new User(
                 1L,
-                "username",
+                "Vinicius",
+                "Peralta",
+                "vinicius-peralta@hotmail.com",
                 "password",
                 AccountType.CASH_FLOW,
                 ProfileTemplates.getProfile()
