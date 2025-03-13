@@ -1,10 +1,10 @@
 package com.cashflow.auth.domain.entities;
 
+import com.cashflow.auth.core.domain.enums.RoleEnum;
 import com.cashflow.auth.domain.templates.entities.RoleTemplates;
-import com.cashflow.core.domain.enums.RoleEnum;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RoleTest {
 
