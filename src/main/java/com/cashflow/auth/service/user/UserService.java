@@ -9,10 +9,10 @@ import com.cashflow.auth.repository.user.UserRepository;
 import com.cashflow.auth.service.profile.IProfileService;
 import com.cashflow.commons.core.dto.request.BaseRequest;
 import com.cashflow.exception.core.CashFlowException;
-import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +53,7 @@ public class UserService implements IUserService {
         if (userRepository.findByEmailIgnoreCase(email).isPresent()) {
             log.error("User with e-mail {} is already registered.", email);
             throw new CashFlowException(
-                    HttpStatus.SC_CONFLICT,
+                    HttpStatus.CONFLICT.value(),
                     messageSource.getMessage("user.already.registered.title", null, language),
                     messageSource.getMessage("user.already.registered.message", new Object[]{email}, language),
                     UserService.class.getName(),

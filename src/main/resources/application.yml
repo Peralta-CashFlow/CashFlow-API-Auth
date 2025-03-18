@@ -3,6 +3,10 @@
 application:
   title: CashFlow-API-Auth
   version: @project.version@
+  description: @project.description@
+  contact:
+    email: vinicius.peralta@hotmail.com
+    name: Vinicius Peralta
   cross:
     origin: ${APP_CROSS_ORIGIN}
 
@@ -18,3 +22,9 @@ spring:
     url: ${DATABASE_CONNECTION_STRING}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
+
+# Spring Doc
+
+springdoc:
+  swagger-ui:
+    enabled: true

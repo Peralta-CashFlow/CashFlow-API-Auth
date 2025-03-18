@@ -3,9 +3,9 @@ package com.cashflow.auth.service.profile;
 import com.cashflow.auth.domain.entities.Profile;
 import com.cashflow.auth.repository.profile.ProfileRepository;
 import com.cashflow.exception.core.CashFlowException;
-import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -31,7 +31,7 @@ public class ProfileService implements IProfileService {
         } else {
             log.error("Profile with name {} not found.", name);
             throw new CashFlowException(
-                    HttpStatus.SC_NOT_FOUND,
+                    HttpStatus.NOT_FOUND.value(),
                     "Profile Not Found",
                     "Profile with name " + name + " not found.",
                     ProfileService.class.getName(),
