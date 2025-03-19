@@ -45,21 +45,11 @@ public class UserService implements IUserService {
     public UserResponse register(BaseRequest<UserCreationRequest> baseRequest) throws CashFlowException {
 
         UserCreationRequest userCreationRequest = baseRequest.getRequest();
-        Locale language = baseRequest.getLanguage();
         String email = userCreationRequest.email();
 
         log.info("Going to check if user with e-mail {} is already registered.", email);
 
-        if (userRepository.findByEmailIgnoreCase(email).isPresent()) {
-            log.error("User with e-mail {} is already registered.", email);
-            throw new CashFlowException(
-                    HttpStatus.CONFLICT.value(),
-                    messageSource.getMessage("user.already.registered.title", null, language),
-                    messageSource.getMessage("user.already.registered.message", new Object[]{email}, language),
-                    UserService.class.getName(),
-                    "register"
-            );
-        }
+        checkIfUserAlreadyExists(email, baseRequest.getLanguage());
 
         log.info("E-mail not registered, proceeding with user creation");
 
@@ -74,6 +64,20 @@ public class UserService implements IUserService {
 
         log.info("User with e-mail: {} successfully registered.", user.getEmail());
         return UserMapper.mapToUserResponse(user);
+    }
+
+    private void checkIfUserAlreadyExists(String email, Locale language) throws CashFlowException {
+        if (userRepository.findByEmailIgnoreCase(email).isPresent()) {
+            log.error("User with e-mail {} is already registered.", email);
+            throw new CashFlowException(
+                    HttpStatus.CONFLICT.value(),
+                    messageSource.getMessage("user.already.registered.title", null, language),
+                    messageSource.getMessage("user.already.registered.message", new Object[]{email}, language),
+                    UserService.class.getName(),
+                    "register"
+            );
+        }
+
     }
 
 }
