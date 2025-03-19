@@ -4,6 +4,9 @@ import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.domain.entities.User;
 import com.cashflow.auth.domain.enums.AccountType;
+import com.cashflow.commons.core.dto.request.BaseRequest;
+
+import java.util.Locale;
 
 public class UserTemplates {
     public static User getUser() {
@@ -35,5 +38,9 @@ public class UserTemplates {
                 "CASH_FLOW",
                 "Basic"
         );
+    }
+
+    public static BaseRequest<UserCreationRequest> getBaseUserCreationRequest() {
+        return new BaseRequest<>(Locale.ENGLISH, getUserCreationRequest());
     }
 }
