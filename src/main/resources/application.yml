@@ -1,5 +1,30 @@
-# App Info
+# App Config
 
 application:
   title: CashFlow-API-Auth
   version: @project.version@
+  description: @project.description@
+  contact:
+    email: vinicius.peralta@hotmail.com
+    name: Vinicius Peralta
+  cross:
+    origin: ${APP_CROSS_ORIGIN}
+
+# Server Config
+
+server:
+  port: ${SERVER_PORT}
+
+# Spring Config
+
+spring:
+  datasource:
+    url: ${DATABASE_CONNECTION_STRING}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+
+# Spring Doc
+
+springdoc:
+  swagger-ui:
+    enabled: true

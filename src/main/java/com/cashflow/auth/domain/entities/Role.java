@@ -1,7 +1,6 @@
 package com.cashflow.auth.domain.entities;
 
-
-import com.cashflow.core.domain.enums.RoleEnum;
+import com.cashflow.auth.core.domain.enums.RoleEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
