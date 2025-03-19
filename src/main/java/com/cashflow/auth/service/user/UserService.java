@@ -5,6 +5,7 @@ import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.domain.entities.Profile;
 import com.cashflow.auth.domain.entities.User;
 import com.cashflow.auth.domain.mapper.user.UserMapper;
+import com.cashflow.auth.domain.validator.profile.ProfileValidator;
 import com.cashflow.auth.repository.user.UserRepository;
 import com.cashflow.auth.service.profile.IProfileService;
 import com.cashflow.commons.core.dto.request.BaseRequest;
@@ -54,6 +55,7 @@ public class UserService implements IUserService {
         log.info("E-mail not registered, proceeding with user creation");
 
         Profile profile = profileService.getProfileByName("Basic");
+        ProfileValidator.validateProfile(profile);
 
         log.info("Mapping user from request...");
         User user = UserMapper.mapFromUserCreationRequestAndProfile(userCreationRequest, profile);
@@ -77,7 +79,6 @@ public class UserService implements IUserService {
                     "register"
             );
         }
-
     }
 
 }

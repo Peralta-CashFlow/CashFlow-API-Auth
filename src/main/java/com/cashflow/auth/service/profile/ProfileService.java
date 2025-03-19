@@ -2,10 +2,8 @@ package com.cashflow.auth.service.profile;
 
 import com.cashflow.auth.domain.entities.Profile;
 import com.cashflow.auth.repository.profile.ProfileRepository;
-import com.cashflow.exception.core.CashFlowException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -22,22 +20,17 @@ public class ProfileService implements IProfileService {
     }
 
     @Override
-    public Profile getProfileByName(String name) throws CashFlowException {
+    public Profile getProfileByName(String name) {
+        Profile profile = null;
         log.info("Going to get profile with name: {}", name);
-        Optional<Profile> profile = profileRepository.findByName(name);
-        if (profile.isPresent()) {
+        Optional<Profile> profileOptional = profileRepository.findByNameIgnoreCase(name);
+        if (profileOptional.isPresent()) {
             log.info("Profile with name {} found.", name);
-            return profile.get();
+            profile = profileOptional.get();
         } else {
             log.error("Profile with name {} not found.", name);
-            throw new CashFlowException(
-                    HttpStatus.NOT_FOUND.value(),
-                    "Profile Not Found",
-                    "Profile with name " + name + " not found.",
-                    ProfileService.class.getName(),
-                    "getProfileByName"
-            );
         }
+        return profile;
     }
 
 }

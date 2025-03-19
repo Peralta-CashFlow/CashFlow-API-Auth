@@ -63,7 +63,7 @@ class UserServiceTest extends BaseTest {
                 passwordEncoder,
                 messageSource
         );
-        profile = profileRepository.findByName("Basic").orElse(null);
+        profile = profileRepository.findByNameIgnoreCase("Basic").orElse(null);
     }
 
     @AfterEach
@@ -99,6 +99,16 @@ class UserServiceTest extends BaseTest {
         when(passwordEncoder.encode(userCreationRequest.password())).thenReturn("encodedPassword");
 
         userService.register(baseRequest);
+
+        assertThrows(CashFlowException.class, () -> userService.register(baseRequest));
+
+    }
+
+    @Test
+    @SneakyThrows
+    void givenInvalidProfile_whenRegister_thenCashFlowException() {
+
+        when(profileService.getProfileByName("Basic")).thenReturn(null);
 
         assertThrows(CashFlowException.class, () -> userService.register(baseRequest));
 
