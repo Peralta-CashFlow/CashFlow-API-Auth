@@ -1,5 +1,7 @@
 package com.cashflow.auth.domain.templates.entities;
 
+import com.cashflow.auth.domain.dto.request.UserCreationRequest;
+import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.domain.entities.User;
 import com.cashflow.auth.domain.enums.AccountType;
 
@@ -13,6 +15,25 @@ public class UserTemplates {
                 "password",
                 AccountType.CASH_FLOW,
                 ProfileTemplates.getProfile()
+        );
+    }
+
+    public static UserCreationRequest getUserCreationRequest() {
+        return new UserCreationRequest(
+          "Vinicius",
+            "Peralta",
+                "vinicius-peralta@hotmail.com",
+                "Password123!"
+        );
+    }
+
+    public static UserResponse getUserResponse() {
+        return new UserResponse(
+              "Vinicius",
+                "Peralta",
+                "vinicius-peralta@hotmail.com",
+                "CASH_FLOW",
+                "Basic"
         );
     }
 }
