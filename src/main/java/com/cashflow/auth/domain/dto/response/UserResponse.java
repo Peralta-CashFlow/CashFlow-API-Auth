@@ -2,7 +2,7 @@ package com.cashflow.auth.domain.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "User information response.")
+@Schema(description = "User information response")
 public record UserResponse(
         @Schema(description = "User first name", example = "Vinicius")
         String firstName,
