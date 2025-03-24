@@ -1,5 +1,6 @@
 package com.cashflow.auth.domain.entities;
 
+import com.cashflow.auth.core.domain.enums.RoleEnum;
 import com.cashflow.auth.domain.enums.AccountType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,8 +39,10 @@ public class User implements UserDetails, Serializable {
     private Profile profile;
 
     @Override
-    public List<Role> getAuthorities() {
-        return profile.getRoles();
+    public List<RoleEnum> getAuthorities() {
+        return profile.getRoles().stream()
+                .map(Role::getRoleEnum)
+                .toList();
     }
 
     @Override

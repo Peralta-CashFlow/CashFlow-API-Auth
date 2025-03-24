@@ -24,7 +24,7 @@ public class Profile implements Serializable {
     private Long id;
     @Column
     private String name;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "tb_profile_roles",
             joinColumns = @JoinColumn(name = "profile_id"),
