@@ -84,14 +84,14 @@ public class UserService implements IUserService {
 
     @Override
     public User findUserByEmailAndPassword(String email, String password, Locale locale) throws CashFlowException {
-        log.info("Searching for user by e-mail: {} and password...", email);
+        log.info("Searching for user by e-mail and password...");
         Optional<User> userOptional = userRepository.findByEmailIgnoreCase(email);
         if (userOptional.isPresent() && passwordEncoder.matches(password, userOptional.get().getPassword())) {
             User user = userOptional.get();
             log.info("User {} found!", user.getUsername());
             return user;
         } else {
-            log.error("User {} not found!", email);
+            log.error("User not found!");
             throw new CashFlowException(
                     HttpStatus.UNAUTHORIZED.value(),
                     messageSource.getMessage("user.login.invalid.title", null, locale),
