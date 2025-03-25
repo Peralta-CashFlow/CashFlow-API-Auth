@@ -124,6 +124,13 @@ class UserServiceTest extends BaseTest {
         assertThrows(CashFlowException.class, () -> userService.findUserByEmailAndPassword("invalid", "invalid", locale));
     }
 
+    @Test
+    @SneakyThrows
+    void givenInvalidPassword_whenFindByEmailAndPassword_thenCashFlowException() {
+        registerUser();
+        assertThrows(CashFlowException.class, () -> userService.findUserByEmailAndPassword(userCreationRequest.email(), "invalid", locale));
+    }
+
     @SneakyThrows
     private UserResponse registerUser() {
         when(profileService.getProfileByName("Basic")).thenReturn(profile);

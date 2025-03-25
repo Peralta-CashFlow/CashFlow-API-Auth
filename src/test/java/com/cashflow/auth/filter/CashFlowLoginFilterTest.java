@@ -106,4 +106,16 @@ class CashFlowLoginFilterTest {
             verify(filterChain, times(0)).doFilter(request, response);
         });
     }
+
+    @Test
+    void givenRequest_whenShouldNotFilter_thenFilterIsApplied() {
+        when(request.getServletPath()).thenReturn("/auth/user/login");
+        assertFalse(cashFlowLoginFilter.shouldNotFilter(request));
+    }
+
+    @Test
+    void givenInvalidRequest_whenShouldNotFilter_thenFilterIsNotApplied() {
+        when(request.getServletPath()).thenReturn("/auth/user/register");
+        assertTrue(cashFlowLoginFilter.shouldNotFilter(request));
+    }
 }
