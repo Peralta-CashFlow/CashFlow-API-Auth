@@ -26,3 +26,9 @@ spring:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.H2Dialect
+
+# JWT Config
+
+jwt:
+  secret: 76facb0e88956d6348e0bd2f0aac40d50c64696aab83c13110110d247479c047
+  expiration: 3

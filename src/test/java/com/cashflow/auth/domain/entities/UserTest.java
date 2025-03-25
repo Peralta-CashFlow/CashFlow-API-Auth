@@ -15,9 +15,9 @@ class UserTest {
 
     @Test
     void givenUser_whenGetAuthoritiesIsCalled_thenRoleListIsReturned() {
-        List<Role> authorities = user.getAuthorities();
+        List<RoleEnum> authorities = user.getAuthorities();
         assertFalse(authorities.isEmpty());
-        assertEquals(RoleEnum.CASH_FLOW_BASICS, authorities.getFirst().getRoleEnum());
+        assertEquals(RoleEnum.CASH_FLOW_BASICS, authorities.getFirst());
     }
 
     @Test
