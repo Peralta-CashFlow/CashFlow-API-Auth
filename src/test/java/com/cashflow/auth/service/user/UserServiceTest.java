@@ -4,6 +4,7 @@ import com.cashflow.auth.config.BaseTest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.domain.entities.Profile;
+import com.cashflow.auth.domain.entities.User;
 import com.cashflow.auth.domain.enums.AccountType;
 import com.cashflow.auth.domain.templates.entities.UserTemplates;
 import com.cashflow.auth.repository.profile.ProfileRepository;
@@ -21,6 +22,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Locale;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
@@ -32,38 +35,39 @@ class UserServiceTest extends BaseTest {
     @Mock
     private IProfileService profileService;
 
-    @Mock
-    private MessageSource messageSource;
-
-    @Mock
-    private PasswordEncoder passwordEncoder;
-
     private final UserRepository userRepository;
-
-    private final ProfileRepository profileRepository;
 
     private final BaseRequest<UserCreationRequest> baseRequest = UserTemplates.getBaseUserCreationRequest();
 
     private final UserCreationRequest userCreationRequest = baseRequest.getRequest();
 
-    private Profile profile;
+    private final Profile profile;
+
+    private final Locale locale = Locale.ENGLISH;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final MessageSource messageSource;
 
     @Autowired
     UserServiceTest(final UserRepository userRepository,
-                    final ProfileRepository profileRepository) {
+                    final ProfileRepository profileRepository,
+                    final PasswordEncoder passwordEncoder,
+                    final MessageSource messageSource) {
         this.userRepository = userRepository;
-        this.profileRepository = profileRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.messageSource = messageSource;
+        this.profile = profileRepository.findByNameIgnoreCase("Basic").orElse(null);
     }
 
     @BeforeEach
-    void setup() {
-        userService = new UserService(
+    void setUp() {
+        this.userService = new UserService(
                 userRepository,
                 profileService,
                 passwordEncoder,
                 messageSource
         );
-        profile = profileRepository.findByNameIgnoreCase("Basic").orElse(null);
     }
 
     @AfterEach
@@ -75,10 +79,7 @@ class UserServiceTest extends BaseTest {
     @SneakyThrows
     void givenNewUserCreationRequest_whenRegister_thenUserResponse() {
 
-        when(profileService.getProfileByName("Basic")).thenReturn(profile);
-        when(passwordEncoder.encode(userCreationRequest.password())).thenReturn("encodedPassword");
-
-        UserResponse response = userService.register(baseRequest);
+        UserResponse response = registerUser();
 
         assertAll(() -> {
                     assertNotNull(response);
@@ -94,12 +95,7 @@ class UserServiceTest extends BaseTest {
     @Test
     @SneakyThrows
     void givenExistingUserCreationRequest_whenRegister_thenCashFlowException() {
-
-        when(profileService.getProfileByName("Basic")).thenReturn(profile);
-        when(passwordEncoder.encode(userCreationRequest.password())).thenReturn("encodedPassword");
-
-        userService.register(baseRequest);
-
+        registerUser();
         assertThrows(CashFlowException.class, () -> userService.register(baseRequest));
 
     }
@@ -112,5 +108,25 @@ class UserServiceTest extends BaseTest {
 
         assertThrows(CashFlowException.class, () -> userService.register(baseRequest));
 
+    }
+
+    @Test
+    @SneakyThrows
+    void givenValidUser_whenFindByEmailAndPassword_thenReturnUser() {
+        UserResponse userResponse = registerUser();
+        User user = userService.findUserByEmailAndPassword(userResponse.email(), userCreationRequest.password(), locale);
+        assertEquals(user.getEmail(), userResponse.email());
+    }
+
+    @Test
+    @SneakyThrows
+    void givenInvalidUser_whenFindByEmailAndPassword_thenCashFlowException() {
+        assertThrows(CashFlowException.class, () -> userService.findUserByEmailAndPassword("invalid", "invalid", locale));
+    }
+
+    @SneakyThrows
+    private UserResponse registerUser() {
+        when(profileService.getProfileByName("Basic")).thenReturn(profile);
+        return userService.register(baseRequest);
     }
 }
