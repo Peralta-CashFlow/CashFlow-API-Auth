@@ -36,8 +36,8 @@ public class JwtService implements IJwtService {
 
     @Override
     public String generateJwtToken(User user, Locale locale) throws CashFlowException {
-        log.info("Generating JWT token for user: {}", user.getUsername());
         try {
+            log.info("Generating JWT token for user: {}", user.getUsername());
             SecretKey secretKey = cashFlowJwtService.generateSecretKey();
             Date date = new Date();
             String jwt = Jwts.builder()
