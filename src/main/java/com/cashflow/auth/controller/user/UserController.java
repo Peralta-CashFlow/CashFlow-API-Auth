@@ -87,7 +87,7 @@ public class UserController {
             @Parameter(name = "Accept-Language", description = "Language to be used on response messages", example = "pt")
             @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
     ) {
-        log.info("User successfully logged in via CashFlowLoginFilter with e-mail: {}", email);
+        log.info("User successfully logged in via CashFlowLoginFilter.");
         return (CashFlowAuthentication) SecurityContextHolder.getContext().getAuthentication();
     }
 

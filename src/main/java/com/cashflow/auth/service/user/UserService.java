@@ -49,7 +49,7 @@ public class UserService implements IUserService {
         UserCreationRequest userCreationRequest = baseRequest.getRequest();
         String email = userCreationRequest.email();
 
-        log.info("Going to check if user with e-mail {} is already registered.", email);
+        log.info("Going to check if user is already registered.");
 
         checkIfUserAlreadyExists(email, baseRequest.getLanguage());
 
@@ -65,13 +65,13 @@ public class UserService implements IUserService {
         log.info("Saving user on database...");
         user = userRepository.save(user);
 
-        log.info("User with e-mail: {} successfully registered.", user.getEmail());
+        log.info("User successfully registered.");
         return UserMapper.mapToUserResponse(user);
     }
 
     private void checkIfUserAlreadyExists(String email, Locale language) throws CashFlowException {
         if (userRepository.findByEmailIgnoreCase(email).isPresent()) {
-            log.error("User with e-mail {} is already registered.", email);
+            log.error("User is already registered.");
             throw new CashFlowException(
                     HttpStatus.CONFLICT.value(),
                     messageSource.getMessage("user.already.registered.title", null, language),
