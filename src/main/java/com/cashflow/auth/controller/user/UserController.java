@@ -9,6 +9,7 @@ import com.cashflow.exception.core.CashFlowException;
 import com.cashflow.exception.core.domain.dto.response.ExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -67,11 +68,16 @@ public class UserController {
 
     @Operation(
             summary = "Login a user",
-            description = "Should login a user from the provided request data."
+            description = "Should login a user from the provided request data.",
+            parameters = {
+                    @Parameter(name = "email", description = "User e-mail", required = true),
+                    @Parameter(name = "password", description = "User password", required = true),
+                    @Parameter(name = "Accept-Language", in = ParameterIn.HEADER, description = "Language to be used on response messages", example = "pt")
+            }
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User logged successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CashFlowAuthentication.class))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = com.cashflow.auth.domain.dto.response.CashFlowAuthentication.class))
             ),
             @ApiResponse(responseCode = "401", description = "Email or password invalid",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
@@ -82,9 +88,8 @@ public class UserController {
     })
     @GetMapping("/login")
     public CashFlowAuthentication login(
-            @Parameter(name = "email", description = "User e-mail", required = true) @RequestParam @NotEmpty String email,
-            @Parameter(name = "password", description = "User password", required = true) @RequestParam @NotEmpty String password,
-            @Parameter(name = "Accept-Language", description = "Language to be used on response messages", example = "pt")
+            @RequestParam @NotEmpty String email,
+            @RequestParam @NotEmpty String password,
             @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
     ) {
         log.info("User successfully logged in via CashFlowLoginFilter.");
