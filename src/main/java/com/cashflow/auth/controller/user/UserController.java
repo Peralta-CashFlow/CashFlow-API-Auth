@@ -30,7 +30,7 @@ import java.util.Locale;
 @RequestMapping(value = "/auth/user")
 @CrossOrigin(origins = "${application.cross.origin}")
 @Tag(name = "User", description = "User related operations")
-public class UserController {
+public class UserController implements IUserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
@@ -40,26 +40,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @Operation(
-            summary = "Register a new user",
-            description = "Should register a new user from the provided request data.",
-            parameters = {
-                    @Parameter(name = "userCreationRequest", description = "User creation request", required = true, schema = @Schema(implementation = UserCreationRequest.class)),
-                    @Parameter(name = "Accept-Language", description = "Language to be used on response messages", in = ParameterIn.HEADER, example = "en")
-            }
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User registered successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))
-            ),
-            @ApiResponse(responseCode = "400", description = "Invalid request data",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
-            ),
-            @ApiResponse(responseCode = "409", description = "User already registered",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
-            )
-    })
-    @PostMapping("/register")
+    @Override
     public UserResponse register(
             @Valid @RequestBody UserCreationRequest userCreationRequest,
             @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
@@ -68,27 +49,7 @@ public class UserController {
         return userService.register(new BaseRequest<>(language, userCreationRequest));
     }
 
-    @Operation(
-            summary = "Login a user",
-            description = "Should login a user from the provided request data.",
-            parameters = {
-                    @Parameter(name = "email", description = "User e-mail", required = true),
-                    @Parameter(name = "password", description = "User password", required = true),
-                    @Parameter(name = "Accept-Language", in = ParameterIn.HEADER, description = "Language to be used on response messages", example = "en")
-            }
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User logged successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = com.cashflow.auth.domain.dto.response.CashFlowAuthentication.class))
-            ),
-            @ApiResponse(responseCode = "401", description = "Email or password invalid",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
-            ),
-            @ApiResponse(responseCode = "500", description = "Error while generation JWT token",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
-            )
-    })
-    @GetMapping("/login")
+    @Override
     public CashFlowAuthentication login(
             @RequestParam @NotEmpty String email,
             @RequestParam @NotEmpty String password,
