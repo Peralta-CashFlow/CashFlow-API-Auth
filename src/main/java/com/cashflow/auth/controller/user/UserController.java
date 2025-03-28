@@ -42,7 +42,11 @@ public class UserController {
 
     @Operation(
             summary = "Register a new user",
-            description = "Should register a new user from the provided request data."
+            description = "Should register a new user from the provided request data.",
+            parameters = {
+                    @Parameter(name = "userCreationRequest", description = "User creation request", required = true, schema = @Schema(implementation = UserCreationRequest.class)),
+                    @Parameter(name = "Accept-Language", description = "Language to be used on response messages", in = ParameterIn.HEADER, example = "en")
+            }
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User registered successfully",
@@ -57,9 +61,7 @@ public class UserController {
     })
     @PostMapping("/register")
     public UserResponse register(
-            @Parameter(name = "userCreationRequest", description = "User creation request", required = true)
             @Valid @RequestBody UserCreationRequest userCreationRequest,
-            @Parameter(name = "Accept-Language", description = "Language to be used on response messages", example = "pt")
             @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
     ) throws CashFlowException {
         log.info("Received request to register a new user with e-mail: {}", userCreationRequest.email());
@@ -72,7 +74,7 @@ public class UserController {
             parameters = {
                     @Parameter(name = "email", description = "User e-mail", required = true),
                     @Parameter(name = "password", description = "User password", required = true),
-                    @Parameter(name = "Accept-Language", in = ParameterIn.HEADER, description = "Language to be used on response messages", example = "pt")
+                    @Parameter(name = "Accept-Language", in = ParameterIn.HEADER, description = "Language to be used on response messages", example = "en")
             }
     )
     @ApiResponses(value = {
