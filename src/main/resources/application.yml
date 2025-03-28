@@ -26,6 +26,8 @@ spring:
 # Spring Doc
 
 springdoc:
+  api-docs:
+    version: OPENAPI_3_0
   swagger-ui:
     enabled: true
 

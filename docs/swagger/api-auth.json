@@ -1,0 +1,302 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "CashFlow-API-Auth",
+    "description": "This API is responsible for Users management on CashFlow app.",
+    "contact": {
+      "name": "Vinicius Peralta",
+      "email": "vinicius.peralta@hotmail.com"
+    },
+    "license": {
+      "name": "MIT License",
+      "url": "http://www.opensource.org/licenses/mit-license.php"
+    },
+    "version": "0.0.1-SNAPSHOT"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8090",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "User",
+      "description": "User related operations"
+    }
+  ],
+  "paths": {
+    "/auth/user/register": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Register a new user",
+        "description": "Should register a new user from the provided request data.",
+        "operationId": "register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "User already registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/user/login": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Login a user",
+        "description": "Should login a user from the provided request data.",
+        "operationId": "login",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "description": "User e-mail",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "User password",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Language",
+            "in": "header",
+            "description": "Language to be used on response messages",
+            "example": "pt"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User logged successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CashFlowAuthentication"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Email or password invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error while generation JWT token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserCreationRequest": {
+        "required": [
+          "email",
+          "firstName",
+          "lastName",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "maxLength": 30,
+            "minLength": 0,
+            "type": "string",
+            "description": "User first name",
+            "example": "Vinicius"
+          },
+          "lastName": {
+            "maxLength": 30,
+            "minLength": 0,
+            "type": "string",
+            "description": "User last name",
+            "example": "Peralta"
+          },
+          "email": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string",
+            "description": "User e-mail",
+            "example": "vinicius-peralta@hotmail.com"
+          },
+          "password": {
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,}$",
+            "type": "string",
+            "description": "User password",
+            "example": "Password123!"
+          }
+        },
+        "description": "User creation request"
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "description": "User first name",
+            "example": "Vinicius"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User last name",
+            "example": "Peralta"
+          },
+          "email": {
+            "type": "string",
+            "description": "User e-mail",
+            "example": "vinicius-peralta@hotmail.com"
+          },
+          "accountType": {
+            "type": "string",
+            "description": "User account type",
+            "example": "CASH_FLOW"
+          },
+          "profile": {
+            "type": "string",
+            "description": "User profile",
+            "example": "Basic"
+          }
+        },
+        "description": "User information response"
+      },
+      "ExceptionResponse": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Exception title",
+            "example": "Invalid request data"
+          },
+          "message": {
+            "type": "string",
+            "description": "Exception message",
+            "example": "The provided request data is invalid."
+          },
+          "className": {
+            "type": "string",
+            "description": "Exception class name",
+            "example": "UserController.java"
+          },
+          "methodName": {
+            "type": "string",
+            "description": "Exception method name",
+            "example": "register"
+          }
+        },
+        "description": "CashFlow's Exception base response."
+      },
+      "CashFlowAuthentication": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "User ID",
+            "format": "int64",
+            "example": 1
+          },
+          "firstName": {
+            "type": "string",
+            "description": "User first name",
+            "example": "Vinicius"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "User last name",
+            "example": "Peralta"
+          },
+          "email": {
+            "type": "string",
+            "description": "User e-mail",
+            "example": "vinicius-peralta@hotmail.com"
+          },
+          "roles": {
+            "type": "array",
+            "description": "User roles",
+            "example": [
+              "CASH_FLOW_BASICS"
+            ],
+            "items": {
+              "type": "string",
+              "description": "User roles",
+              "example": "[\"CASH_FLOW_BASICS\"]",
+              "enum": [
+                "CASH_FLOW_BASICS"
+              ]
+            }
+          },
+          "authenticated": {
+            "type": "boolean",
+            "description": "User authentication status",
+            "example": true
+          },
+          "jwtToken": {
+            "type": "string",
+            "description": "JWT token",
+            "example": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJDYXNoRmxvdyIsInN1YiI6IjQiLCJpYXQiOjE3NDI2NjYyNTEsImV4cCI6MTc0MjY3NzA1MSwiaWQiOjQsImZpcnN0TmFtZSI6IlZpbmljaXVzIiwibGFzdE5hbWUiOiJQZXJhbHRhIiwiZW1haWwiOiJ2aW5pY2l1cy1wZXJhbHRhQGhvdG1haWwuY29tIiwicm9sZXMiOiJDQVNIX0ZMT1dfQkFTSUNTIn0.AVRjCp_feXr0qCx06AFxL4S5BkfK45qvNwiYGe3EfVMjKbYgKaKn9IaphUKv4kkpCBNGEXuZZrCRi3s7H1aizg"
+          }
+        },
+        "description": "CashFlow authentication information"
+      }
+    }
+  }
+}

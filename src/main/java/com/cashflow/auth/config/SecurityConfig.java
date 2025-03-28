@@ -2,6 +2,7 @@ package com.cashflow.auth.config;
 
 import com.cashflow.auth.core.filter.JwtValidatorFilter;
 import com.cashflow.auth.core.service.jwt.CashFlowJwtService;
+import com.cashflow.auth.core.utils.AuthUtils;
 import com.cashflow.auth.filter.CashFlowLoginFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @Configuration
 @Profile("!test")
 public class SecurityConfig {
@@ -21,13 +26,12 @@ public class SecurityConfig {
     @Value(value = "${jwt.secret}")
     private String jwtSecret;
 
-    private static final String[] SECURITY_WHITELIST_ENDPOINT = {
-            "/auth/user/register",
-            "/auth/user/login",
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-ui.html"
-    };
+    private static final String[] SECURITY_WHITELIST_ENDPOINT = AuthUtils.whiteListEndpoints(
+            new String[]{
+                    "/auth/user/register",
+                    "/auth/user/login"
+            }
+    );
 
     @Bean
     public CashFlowJwtService cashFlowJwtService() {

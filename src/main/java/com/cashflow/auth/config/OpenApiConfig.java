@@ -51,5 +51,4 @@ public class OpenApiConfig {
         return new License()
                 .name("MIT License")
                 .url("http://www.opensource.org/licenses/mit-license.php");
-    }
-}
+    }}
