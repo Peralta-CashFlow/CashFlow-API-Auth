@@ -76,3 +76,13 @@ flowchart
 - SERVER_PORT;
 - JWT_SECRET;
 - JWT_EXPIRATION;
+
+## Sonar Badges
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Peralta-CashFlow_CashFlow-API-Auth&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Peralta-CashFlow_CashFlow-API-Auth)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Peralta-CashFlow_CashFlow-API-Auth&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Peralta-CashFlow_CashFlow-API-Auth)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Peralta-CashFlow_CashFlow-API-Auth&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Peralta-CashFlow_CashFlow-API-Auth)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Peralta-CashFlow_CashFlow-API-Auth&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Peralta-CashFlow_CashFlow-API-Auth)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Peralta-CashFlow_CashFlow-API-Auth&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Peralta-CashFlow_CashFlow-API-Auth)
+
+[![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-dark.svg)](https://sonarcloud.io/summary/new_code?id=Peralta-CashFlow_CashFlow-API-Auth)
