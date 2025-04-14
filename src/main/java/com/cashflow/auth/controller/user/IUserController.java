@@ -14,7 +14,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Locale;
 
@@ -38,7 +40,6 @@ public interface IUserController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
             )
     })
-    @PostMapping("/register")
     UserResponse register(
             @Valid @RequestBody UserCreationRequest userCreationRequest,
             @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
@@ -64,7 +65,6 @@ public interface IUserController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
             )
     })
-    @GetMapping("/login")
     CashFlowAuthentication login(
             @RequestParam @NotEmpty String email,
             @RequestParam @NotEmpty String password,

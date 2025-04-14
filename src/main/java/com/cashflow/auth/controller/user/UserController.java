@@ -41,6 +41,7 @@ public class UserController implements IUserController {
     }
 
     @Override
+    @PostMapping("/register")
     public UserResponse register(
             @Valid @RequestBody UserCreationRequest userCreationRequest,
             @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
@@ -50,6 +51,7 @@ public class UserController implements IUserController {
     }
 
     @Override
+    @GetMapping("/login")
     public CashFlowAuthentication login(
             @RequestParam @NotEmpty String email,
             @RequestParam @NotEmpty String password,
