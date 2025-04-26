@@ -44,7 +44,7 @@ public class CashFlowLoginFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(UserMapper.mapToCashFlowAuthentication(user, jwtToken));
         } catch (CashFlowException exception) {
             response.setStatus(exception.getHttpStatusCode());
-            response.setContentType("application/json;charset=UTF-8");
+            response.setContentType("application/json");
             response.getWriter().write(
                     new ObjectMapper()
                             .writeValueAsString(ExceptionResponseMapper.fromCashFlowException(exception))
