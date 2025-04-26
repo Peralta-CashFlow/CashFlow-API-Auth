@@ -44,11 +44,13 @@ public class CashFlowLoginFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(UserMapper.mapToCashFlowAuthentication(user, jwtToken));
         } catch (CashFlowException exception) {
             response.setStatus(exception.getHttpStatusCode());
-            response.setContentType("application/json");
+            response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write(
                     new ObjectMapper()
                             .writeValueAsString(ExceptionResponseMapper.fromCashFlowException(exception))
             );
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.setHeader("Access-Control-Allow-Credentials", "true");
             return;
         }
         filterChain.doFilter(request, response);
