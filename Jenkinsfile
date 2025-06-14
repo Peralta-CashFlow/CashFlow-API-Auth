@@ -17,7 +17,6 @@ pipeline {
                     if (!params.version?.trim()) {
                         error "Version is mandatory, please define the value and run the pipeline again."
                     }
-                    env.IMAGE_TAG = "${DOCKER_USERNAME}/cashflow-api-auth:${params.version}"
                 }
             }
         }
@@ -82,11 +81,17 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    if (isUnix()) {
-                        sh "docker build -t ${env.IMAGE_TAG} ."
-                    } else {
-                        bat "docker build -t ${env.IMAGE_TAG} ."
+                withCredentials([
+                    usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')
+                ]) {
+                    script {
+                        def imageTag = "${DOCKER_USERNAME}/cashflow-api-auth:${params.version}"
+                        env.IMAGE_TAG = imageTag
+                        if (isUnix()) {
+                            sh "docker build -t ${imageTag} ."
+                        } else {
+                            bat "docker build -t ${imageTag} ."
+                        }
                     }
                 }
             }
