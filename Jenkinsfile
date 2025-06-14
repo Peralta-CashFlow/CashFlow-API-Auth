@@ -21,63 +21,43 @@ pipeline {
             }
         }
 
-        stage('Prepare Maven Settings') {
-            steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'github-packages',
-                        usernameVariable: 'GITHUB_USERNAME',
-                        passwordVariable: 'GITHUB_TOKEN'
-                    )
-                ]) {
-                    configFileProvider([
-                        configFile(fileId: 'cash-flow-settings.xml', variable: 'SETTINGS_FILE')
-                    ]) {
-                        script {
-                            if (isUnix()) {
-                                sh '''
-                                    sed -i 's|_GITHUB_USERNAME_|${GITHUB_USERNAME}|' $SETTINGS_FILE
-                                    sed -i 's|_GITHUB_TOKEN_|${GITHUB_TOKEN}|' $SETTINGS_FILE
-                                '''
-                            } else {
-                                bat """
-                                    powershell -Command "(Get-Content %SETTINGS_FILE%) -replace '_GITHUB_USERNAME_', '%GITHUB_USERNAME%' | Set-Content %SETTINGS_FILE%"
-                                    powershell -Command "(Get-Content %SETTINGS_FILE%) -replace '_GITHUB_TOKEN_', '%GITHUB_TOKEN%' | Set-Content %SETTINGS_FILE%"
-                                """
+        stage('Build JAR') {
+                    steps {
+                        withCredentials([
+                            usernamePassword(
+                                credentialsId: 'github-packages',
+                                usernameVariable: 'GITHUB_USERNAME',
+                                passwordVariable: 'GITHUB_TOKEN'
+                            )
+                        ]) {
+                            configFileProvider([
+                                configFile(fileId: 'cash-flow-settings.xml', variable: 'SETTINGS_FILE')
+                            ]) {
+                                script {
+                                    if (isUnix()) {
+                                        sh '''
+                                            sed -i 's|_GITHUB_USERNAME_|${GITHUB_USERNAME}|' $SETTINGS_FILE
+                                            sed -i 's|_GITHUB_TOKEN_|${GITHUB_TOKEN}|' $SETTINGS_FILE
+                                            mvn clean install -s $SETTINGS_FILE
+                                        '''
+                                    } else {
+                                        bat """
+                                            powershell -Command "(Get-Content %SETTINGS_FILE%) -replace '_GITHUB_USERNAME_', '%GITHUB_USERNAME%' | Set-Content %SETTINGS_FILE%"
+                                            powershell -Command "(Get-Content %SETTINGS_FILE%) -replace '_GITHUB_TOKEN_', '%GITHUB_TOKEN%' | Set-Content %SETTINGS_FILE%"
+                                            mvn clean install -s %SETTINGS_FILE%
+                                        """
+                                    }
+                                }
                             }
                         }
                     }
-                }
-            }
-        }
 
-        stage('Build JAR') {
-            steps {
-                configFileProvider([
-                    configFile(fileId: 'cash-flow-settings.xml', variable: 'SETTINGS_FILE')
-                ]) {
-                    script {
-                        if (isUnix()) {
-                            sh "mvn clean install -s $SETTINGS_FILE"
-                        } else {
-                            bat "mvn clean install -s %SETTINGS_FILE%"
+                    post {
+                        success {
+                            archiveArtifacts 'target/*.jar'
                         }
                     }
                 }
-            }
-
-            post {
-                always {
-                    script {
-                        if (isUnix()) {
-                            sh 'rm -f $SETTINGS_FILE'
-                        } else {
-                            bat 'del %SETTINGS_FILE%'
-                        }
-                    }
-                }
-            }
-        }
 
         stage('Build Docker Image') {
             steps {
