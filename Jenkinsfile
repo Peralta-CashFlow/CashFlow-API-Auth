@@ -22,42 +22,43 @@ pipeline {
         }
 
         stage('Build JAR') {
-                    steps {
-                        withCredentials([
-                            usernamePassword(
-                                credentialsId: 'github-packages',
-                                usernameVariable: 'GITHUB_USERNAME',
-                                passwordVariable: 'GITHUB_TOKEN'
-                            )
+            steps {
+                withCredentials(
+                    [usernamePassword(
+                        credentialsId: 'github-packages',
+                        usernameVariable: 'GITHUB_USERNAME',
+                        passwordVariable: 'GITHUB_TOKEN'
+                    )
+                    ]) {
+                        configFileProvider([
+                            configFile(fileId: 'cash-flow-settings.xml', variable: 'SETTINGS_FILE')
                         ]) {
-                            configFileProvider([
-                                configFile(fileId: 'cash-flow-settings.xml', variable: 'SETTINGS_FILE')
-                            ]) {
-                                script {
-                                    if (isUnix()) {
-                                        sh '''
-                                            sed -i 's|_GITHUB_USERNAME_|${GITHUB_USERNAME}|' $SETTINGS_FILE
-                                            sed -i 's|_GITHUB_TOKEN_|${GITHUB_TOKEN}|' $SETTINGS_FILE
-                                            mvn clean install -s $SETTINGS_FILE
-                                        '''
-                                    } else {
-                                        bat """
-                                            powershell -Command "(Get-Content %SETTINGS_FILE%) -replace '_GITHUB_USERNAME_', '%GITHUB_USERNAME%' | Set-Content %SETTINGS_FILE%"
-                                            powershell -Command "(Get-Content %SETTINGS_FILE%) -replace '_GITHUB_TOKEN_', '%GITHUB_TOKEN%' | Set-Content %SETTINGS_FILE%"
-                                            mvn clean install -s %SETTINGS_FILE%
-                                        """
-                                    }
+                            script {
+                                if (isUnix()) {
+                                    sh '''
+                                        sed -i 's|_GITHUB_USERNAME_|${GITHUB_USERNAME}|' $SETTINGS_FILE
+                                        sed -i 's|_GITHUB_TOKEN_|${GITHUB_TOKEN}|' $SETTINGS_FILE
+                                        mvn clean install -s $SETTINGS_FILE
+                                    '''
+                                } else {
+                                    bat """
+                                        powershell -Command "(Get-Content %SETTINGS_FILE%) -replace '_GITHUB_USERNAME_', '%GITHUB_USERNAME%' | Set-Content %SETTINGS_FILE%"
+                                        powershell -Command "(Get-Content %SETTINGS_FILE%) -replace '_GITHUB_TOKEN_', '%GITHUB_TOKEN%' | Set-Content %SETTINGS_FILE%"
+                                        mvn clean install -s %SETTINGS_FILE%
+                                    """
                                 }
                             }
                         }
                     }
+                }
 
-                    post {
-                        success {
-                            archiveArtifacts 'target/*.jar'
-                        }
+                post {
+                    success {
+                        archiveArtifacts 'target/*.jar'
                     }
                 }
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
