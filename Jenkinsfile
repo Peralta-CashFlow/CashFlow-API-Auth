@@ -76,7 +76,7 @@ pipeline {
                 }
             }
         }
-
+      
         stage('Push Docker Image') {
             steps {
                 withDockerRegistry(credentialsId: 'dockerhub-credentials', url: '') {
