@@ -1,0 +1,109 @@
+pipeline {
+    agent any
+
+    tools {
+        maven "3.9.10"
+    }
+
+    parameters {
+        string(name: 'version', description: 'The version of the new image.')
+    }
+
+    stages {
+
+        stage('Validate Parameters') {
+            steps {
+                script {
+                    if (!params.version?.trim()) {
+                        error "Version is mandatory, please define the value and run the pipeline again."
+                    }
+                    env.IMAGE_TAG = "${DOCKER_USERNAME}/cashflow-api-auth:${params.version}"
+                }
+            }
+        }
+
+        stage('Prepare Maven Settings') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'github-packages',
+                        usernameVariable: 'GITHUB_USERNAME',
+                        passwordVariable: 'GITHUB_TOKEN'
+                    )
+                ]) {
+                    configFileProvider([
+                        configFile(fileId: 'cash-flow-settings.xml', variable: 'SETTINGS_FILE')
+                    ]) {
+                        script {
+                            if (isUnix()) {
+                                sh '''
+                                    sed -i 's|_GITHUB_USERNAME_|${GITHUB_USERNAME}|' $SETTINGS_FILE
+                                    sed -i 's|_GITHUB_TOKEN_|${GITHUB_TOKEN}|' $SETTINGS_FILE
+                                '''
+                            } else {
+                                bat """
+                                    powershell -Command "(Get-Content %SETTINGS_FILE%) -replace '_GITHUB_USERNAME_', '%GITHUB_USERNAME%' | Set-Content %SETTINGS_FILE%"
+                                    powershell -Command "(Get-Content %SETTINGS_FILE%) -replace '_GITHUB_TOKEN_', '%GITHUB_TOKEN%' | Set-Content %SETTINGS_FILE%"
+                                """
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build JAR') {
+            steps {
+                configFileProvider([
+                    configFile(fileId: 'cash-flow-settings.xml', variable: 'SETTINGS_FILE')
+                ]) {
+                    script {
+                        if (isUnix()) {
+                            sh "mvn clean install -s $SETTINGS_FILE"
+                        } else {
+                            bat "mvn clean install -s %SETTINGS_FILE%"
+                        }
+                    }
+                }
+            }
+
+            post {
+                always {
+                    script {
+                        if (isUnix()) {
+                            sh 'rm -f $SETTINGS_FILE'
+                        } else {
+                            bat 'del %SETTINGS_FILE%'
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh "docker build -t ${env.IMAGE_TAG} ."
+                    } else {
+                        bat "docker build -t ${env.IMAGE_TAG} ."
+                    }
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                withDockerRegistry(credentialsId: 'dockerhub-credentials', url: '') {
+                    script {
+                        if (isUnix()) {
+                            sh "docker push ${env.IMAGE_TAG}"
+                        } else {
+                            bat "docker push ${env.IMAGE_TAG}"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
