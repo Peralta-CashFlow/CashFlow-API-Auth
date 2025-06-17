@@ -22,6 +22,9 @@ spring:
     url: ${DATABASE_CONNECTION_STRING}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
 
 # Spring Doc
 
