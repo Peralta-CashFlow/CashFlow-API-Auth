@@ -5,12 +5,15 @@
 
 #### All the authentication process is done by JWT tokens which are generated and sent to front-end when the user logs in. The token will be validated on every request to every API by an interceptor implemented on the [Auth-Lib](https://github.com/Peralta-CashFlow/CashFlow-Libraries/tree/main/Auth-Lib)
 
-## Features
+# Summary
 
 - [User Registration](#user-registration)
 - [User Login](#user-login)
+- [Containerization](#containerization)
+- [Environment Variables](#environment-variables)
+- [Sonar Badges](#sonar-badges)
 
-### User Registration
+# User Registration
 
 To register a new user, you need to provide the following information:
 
@@ -67,7 +70,15 @@ flowchart
     style J stroke:#00C853
 ```
 
-## Environment Variables
+# Containerization
+
+To run the API in a containerized environment, you can use Docker. Access this [DockerHub](https://hub.docker.com/r/viniciusperalta/cashflow-api-auth)
+repository that contains the Docker image for this API, you can pull the image and run it.
+
+If you want, clone this [repository](https://github.com/Peralta-CashFlow/.github/tree/main/profile) where we have a 
+Docker Compose file that will run all CashFlow environment locally!
+
+# Environment Variables
 
 - DATABASE_CONNECTION_STRING;
 - DATABASE_USERNAME;
@@ -77,7 +88,7 @@ flowchart
 - JWT_SECRET;
 - JWT_EXPIRATION;
 
-## Sonar Badges
+# Sonar Badges
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Peralta-CashFlow_CashFlow-API-Auth&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Peralta-CashFlow_CashFlow-API-Auth)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Peralta-CashFlow_CashFlow-API-Auth&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Peralta-CashFlow_CashFlow-API-Auth)
