@@ -139,6 +139,17 @@
             <version>0.12.6</version>
         </dependency>
 
+        <!-- Observability -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>1.15.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
         <!-- CashFlow -->
         <dependency>
             <groupId>com.peralta.cashflow</groupId>
