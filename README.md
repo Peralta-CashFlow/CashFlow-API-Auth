@@ -10,6 +10,7 @@
 - [User Registration](#user-registration)
 - [User Login](#user-login)
 - [Containerization](#containerization)
+- [Observability](#observability)
 - [Environment Variables](#environment-variables)
 - [Sonar Badges](#sonar-badges)
 
@@ -77,6 +78,12 @@ repository that contains the Docker image for this API, you can pull the image a
 
 If you want, clone this [repository](https://github.com/Peralta-CashFlow/.github/tree/main/profile) where we have a 
 Docker Compose file that will run all CashFlow environment locally!
+
+# Observability
+
+This API is configured to expose metrics and traces for observability purposes with [Prometheus](https://prometheus.io/)
+also on the Docker Compose file mentioned above, it is integrated with [Grafana](https://grafana.com/). 
+Reefer to the Organization's documentation for more details about observability.
 
 # Environment Variables
 
