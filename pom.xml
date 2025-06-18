@@ -5,7 +5,7 @@
 
     <groupId>com.peralta.cashflow</groupId>
     <artifactId>CashFlow-API-Auth</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <name>API-Auth</name>
     <description>This API is responsible for Users management on CashFlow app.</description>
     <url>https://github.com/Peralta-CashFlow/CashFlow-API-Auth</url>
