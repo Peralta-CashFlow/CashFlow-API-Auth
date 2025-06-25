@@ -76,8 +76,8 @@ flowchart
 To run the API in a containerized environment, you can use Docker. Access this [DockerHub](https://hub.docker.com/r/viniciusperalta/cashflow-api-auth)
 repository that contains the Docker image for this API, you can pull the image and run it.
 
-If you want, clone this [repository](https://github.com/Peralta-CashFlow/.github/tree/main/profile) where we have a 
-Docker Compose file that will run all CashFlow environment locally!
+If you want, clone this [repository](https://github.com/Peralta-CashFlow/CashFlow-Compose) where we have a 
+Docker Compose file that will run all CashFlow environment locally! Checkout the documentation on the repository.
 
 # Observability
 
