@@ -14,7 +14,7 @@ CREATE TABLE tb_user_financial_profile (
     user_id BIGINT NOT NULL,
     occupation VARCHAR(50) NULL,
     monthly_income DECIMAL(10, 2) NULL,
-    expenses_limit DECIMAL(10, 2) NULL,
+    monthly_expenses_limit DECIMAL(10, 2) NULL,
     goals VARCHAR(100) NULL,
     FOREIGN KEY (user_id) REFERENCES tb_user(id)
 );
