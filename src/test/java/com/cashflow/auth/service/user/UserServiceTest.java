@@ -5,7 +5,6 @@ import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.domain.entities.Profile;
 import com.cashflow.auth.domain.entities.User;
-import com.cashflow.auth.domain.enums.AccountType;
 import com.cashflow.auth.domain.templates.entities.UserTemplates;
 import com.cashflow.auth.repository.profile.ProfileRepository;
 import com.cashflow.auth.repository.user.UserRepository;
@@ -83,7 +82,6 @@ class UserServiceTest extends BaseTest {
 
         assertAll(() -> {
                     assertNotNull(response);
-                    assertEquals(response.accountType(), AccountType.CASH_FLOW.name());
                     assertEquals(response.email(), userCreationRequest.email());
                     assertEquals(response.profile(), profile.getName());
                     assertEquals(response.firstName(), userCreationRequest.firstName());

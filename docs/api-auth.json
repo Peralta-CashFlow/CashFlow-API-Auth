@@ -206,11 +206,6 @@
             "description": "User e-mail",
             "example": "vinicius-peralta@hotmail.com"
           },
-          "accountType": {
-            "type": "string",
-            "description": "User account type",
-            "example": "CASH_FLOW"
-          },
           "profile": {
             "type": "string",
             "description": "User profile",

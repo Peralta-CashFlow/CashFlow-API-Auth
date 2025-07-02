@@ -10,8 +10,6 @@ public record UserResponse(
         String lastName,
         @Schema(description = "User e-mail", example = "vinicius-peralta@hotmail.com")
         String email,
-        @Schema(description = "User account type", example = "CASH_FLOW")
-        String accountType,
         @Schema(description = "User profile", example = "Basic")
         String profile
 ) {

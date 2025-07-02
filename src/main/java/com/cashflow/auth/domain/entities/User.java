@@ -1,7 +1,6 @@
 package com.cashflow.auth.domain.entities;
 
 import com.cashflow.auth.core.domain.enums.RoleEnum;
-import com.cashflow.auth.domain.enums.AccountType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,9 +30,6 @@ public class User implements UserDetails, Serializable {
     private String email;
     @Column
     private String password;
-    @Column(name = "account_type")
-    @Enumerated(EnumType.STRING)
-    private AccountType accountType;
     @ManyToOne
     @JoinColumn(name = "profile", nullable = false)
     private Profile profile;
