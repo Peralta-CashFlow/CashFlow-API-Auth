@@ -35,7 +35,21 @@ CREATE TABLE tb_user (
     last_name VARCHAR(30) NULL,
     email VARCHAR(100) NOT NULL,
     password VARCHAR(255) NULL,
-    account_type VARCHAR(15) NOT NULL,
     profile BIGINT NOT NULL,
+    avatar LONGBLOB NULL,
+    gender VARCHAR(1) NULL,
+    birthday DATE NULL,
+    tax_number VARCHAR(14) NULL,
     FOREIGN KEY (profile) REFERENCES tb_profile(id)
+);
+
+-- Financial profile table creation
+CREATE TABLE tb_user_financial_profile (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    occupation VARCHAR(50) NULL,
+    monthly_income DECIMAL(10, 2) NULL,
+    monthly_expenses_limit DECIMAL(10, 2) NULL,
+    goals VARCHAR(100) NULL,
+    FOREIGN KEY (user_id) REFERENCES tb_user(id)
 );

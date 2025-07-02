@@ -3,28 +3,35 @@ package com.cashflow.auth.domain.templates.entities;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.domain.entities.User;
-import com.cashflow.auth.domain.enums.AccountType;
+import com.cashflow.auth.domain.enums.Gender;
 import com.cashflow.commons.core.dto.request.BaseRequest;
 
+import java.time.LocalDate;
 import java.util.Locale;
 
 public class UserTemplates {
     public static User getUser() {
-        return new User(
+        User user = new User(
                 1L,
                 "Vinicius",
                 "Peralta",
                 "vinicius-peralta@hotmail.com",
                 "password",
-                AccountType.CASH_FLOW,
-                ProfileTemplates.getProfile()
+                ProfileTemplates.getProfile(),
+                new byte[0],
+                Gender.M,
+                LocalDate.now(),
+                "00011122233",
+                null
         );
+        user.setFinancialProfile(FinancialProfileTemplates.financialProfile(user));
+        return user;
     }
 
     public static UserCreationRequest getUserCreationRequest() {
         return new UserCreationRequest(
-          "Vinicius",
-            "Peralta",
+                "Vinicius",
+                "Peralta",
                 "vinicius-peralta@hotmail.com",
                 "Password123!"
         );
@@ -32,10 +39,9 @@ public class UserTemplates {
 
     public static UserResponse getUserResponse() {
         return new UserResponse(
-              "Vinicius",
+                "Vinicius",
                 "Peralta",
                 "vinicius-peralta@hotmail.com",
-                "CASH_FLOW",
                 "Basic"
         );
     }

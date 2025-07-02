@@ -5,7 +5,6 @@ import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.domain.entities.Profile;
 import com.cashflow.auth.domain.entities.User;
-import com.cashflow.auth.domain.enums.AccountType;
 
 public class UserMapper {
 
@@ -17,7 +16,6 @@ public class UserMapper {
                 .lastName(userCreationRequest.lastName())
                 .email(userCreationRequest.email())
                 .password(userCreationRequest.password())
-                .accountType(AccountType.CASH_FLOW)
                 .profile(profile)
                 .build();
     }
@@ -27,7 +25,6 @@ public class UserMapper {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
-                user.getAccountType().name(),
                 user.getProfile().getName()
         );
     }
