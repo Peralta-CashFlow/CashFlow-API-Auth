@@ -6,6 +6,9 @@ import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.domain.entities.Profile;
 import com.cashflow.auth.domain.entities.User;
 
+import java.util.Base64;
+import java.util.Objects;
+
 public class UserMapper {
 
     private UserMapper() {}
@@ -25,7 +28,11 @@ public class UserMapper {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
-                user.getProfile().getName()
+                user.getProfile().getName(),
+                Objects.nonNull(user.getAvatar()) ? Base64.getEncoder().encodeToString(user.getAvatar()) : null,
+                Objects.nonNull(user.getGender()) ? user.getGender().getDescription() : null,
+                user.getBirthday(),
+                user.getTaxNumber()
         );
     }
 
