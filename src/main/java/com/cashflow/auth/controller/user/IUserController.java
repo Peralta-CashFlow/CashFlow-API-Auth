@@ -1,6 +1,7 @@
 package com.cashflow.auth.controller.user;
 
 import com.cashflow.auth.core.domain.authentication.CashFlowAuthentication;
+import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.exception.core.CashFlowException;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,5 +72,36 @@ public interface IUserController {
             @RequestParam @NotEmpty String password,
             @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
     );
+
+    @Operation(
+            summary = "Edit user personal information",
+            description = "Should edit user personal information from the provided request data.",
+            security = @SecurityRequirement(name = "Authorization"),
+            parameters = {
+                    @Parameter(name = "Accept-Language", description = "Language to be used on response messages", in = ParameterIn.HEADER, example = "en"),
+                    @Parameter(name = "Authorization", description = "JWT token", in = ParameterIn.HEADER, required = true, example = "JWT.TOKEN.HERE")
+            }
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User personal information edited successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid request data",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "User not found",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+            ),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated user",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+            ),
+            @ApiResponse(responseCode = "403", description = "User not authorized to edit others personal information",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+            )
+    })
+    UserResponse editPersonalInformation(
+            @Valid @RequestBody EditPersonalInformationRequest request,
+            @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
+    ) throws CashFlowException;
 
 }

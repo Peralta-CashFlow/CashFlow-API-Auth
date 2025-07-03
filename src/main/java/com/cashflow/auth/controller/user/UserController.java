@@ -1,6 +1,7 @@
 package com.cashflow.auth.controller.user;
 
 import com.cashflow.auth.core.domain.authentication.CashFlowAuthentication;
+import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.service.user.IUserService;
@@ -51,6 +52,12 @@ public class UserController implements IUserController {
     ) {
         log.info("User successfully logged in via CashFlowLoginFilter.");
         return (CashFlowAuthentication) SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    @Override
+    @PatchMapping("/personal-information")
+    public UserResponse editPersonalInformation(EditPersonalInformationRequest request, Locale language) throws CashFlowException {
+        return null;
     }
 
 }
