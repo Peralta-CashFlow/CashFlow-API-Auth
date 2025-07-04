@@ -1,6 +1,5 @@
 package com.cashflow.auth.service.user;
 
-import com.cashflow.auth.config.BaseTest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.domain.entities.Profile;

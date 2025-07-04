@@ -53,3 +53,7 @@ CREATE TABLE tb_user_financial_profile (
     goals VARCHAR(100) NULL,
     FOREIGN KEY (user_id) REFERENCES tb_user(id)
 );
+
+-- Insert a user with Basic profile
+INSERT INTO tb_user (first_name, last_name, email, password, profile, avatar, gender, birthday, tax_number)
+VALUES ('Vinicius', 'Peralta', 'vinicius-peralta@email.com', 'senha123', 1, NULL, 'M', '1999-02-23', '12345678901');
