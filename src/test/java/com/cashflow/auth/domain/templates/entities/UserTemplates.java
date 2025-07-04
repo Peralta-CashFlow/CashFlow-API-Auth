@@ -42,7 +42,11 @@ public class UserTemplates {
                 "Vinicius",
                 "Peralta",
                 "vinicius-peralta@hotmail.com",
-                "Basic"
+                "Basic",
+                "base64 text",
+                "Male",
+                LocalDate.of(1999, 2, 23),
+                "00011122233"
         );
     }
 

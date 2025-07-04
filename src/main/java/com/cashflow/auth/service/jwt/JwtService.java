@@ -1,6 +1,5 @@
 package com.cashflow.auth.service.jwt;
 
-import com.cashflow.auth.core.service.jwt.CashFlowJwtService;
 import com.cashflow.auth.core.utils.AuthUtils;
 import com.cashflow.auth.domain.entities.User;
 import com.cashflow.exception.core.CashFlowException;
@@ -24,13 +23,9 @@ public class JwtService implements IJwtService {
 
     private static final Logger log = LoggerFactory.getLogger(JwtService.class);
 
-    private final CashFlowJwtService cashFlowJwtService;
-
     private final MessageSource messageSource;
 
-    public JwtService(final CashFlowJwtService cashFlowJwtService,
-                      final MessageSource messageSource) {
-        this.cashFlowJwtService = cashFlowJwtService;
+    public JwtService(final MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
@@ -38,7 +33,7 @@ public class JwtService implements IJwtService {
     public String generateJwtToken(User user, Locale locale) throws CashFlowException {
         try {
             log.info("Generating JWT token for user: {}", user.getUsername());
-            SecretKey secretKey = cashFlowJwtService.generateSecretKey();
+            SecretKey secretKey = AuthUtils.getJwtSecretKey();
             Date date = new Date();
             String jwt = Jwts.builder()
                     .issuer("CashFlow")
