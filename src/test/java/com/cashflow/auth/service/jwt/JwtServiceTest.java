@@ -1,6 +1,5 @@
 package com.cashflow.auth.service.jwt;
 
-import com.cashflow.auth.config.BaseTest;
 import com.cashflow.auth.core.utils.AuthUtils;
 import com.cashflow.auth.domain.entities.User;
 import com.cashflow.auth.domain.templates.entities.UserTemplates;
@@ -9,10 +8,12 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -20,15 +21,14 @@ import javax.crypto.SecretKey;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-class JwtServiceTest extends BaseTest {
+@ExtendWith(MockitoExtension.class)
+class JwtServiceTest {
 
-    private final JwtService jwtService;
+    @InjectMocks
+    private JwtService jwtService;
 
-    @Autowired
-    JwtServiceTest(MessageSource messageSource) {
-        this.jwtService = new JwtService(messageSource);
-    }
+    @Mock
+    private MessageSource messageSource;
 
     @Test
     @SneakyThrows
