@@ -56,8 +56,12 @@ public class UserController implements IUserController {
 
     @Override
     @PatchMapping("/personal-information")
-    public UserResponse editPersonalInformation(EditPersonalInformationRequest request, Locale language) throws CashFlowException {
-        return null;
+    public UserResponse editPersonalInformation(
+            @Valid @RequestPart("request") EditPersonalInformationRequest request,
+            @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
+    ) throws CashFlowException {
+        log.info("Received request to edit personal information...");
+        return userService.editPersonalInformation(new BaseRequest<>(language, request));
     }
 
 }
