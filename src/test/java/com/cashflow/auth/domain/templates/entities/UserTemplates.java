@@ -1,5 +1,6 @@
 package com.cashflow.auth.domain.templates.entities;
 
+import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.domain.entities.User;
@@ -52,5 +53,17 @@ public class UserTemplates {
 
     public static BaseRequest<UserCreationRequest> getBaseUserCreationRequest() {
         return new BaseRequest<>(Locale.ENGLISH, getUserCreationRequest());
+    }
+
+    public static EditPersonalInformationRequest getEditPersonalInformationRequest() {
+        return new EditPersonalInformationRequest(
+                1L,
+                "Vinicius",
+                "Peralta",
+                Gender.M,
+                LocalDate.of(1999, 2, 23),
+                "12345678901",
+                ""
+        );
     }
 }

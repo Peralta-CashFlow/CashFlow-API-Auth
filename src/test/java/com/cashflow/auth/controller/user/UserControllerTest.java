@@ -78,4 +78,19 @@ class UserControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(cashFlowAuthentication)));
     }
+
+    @Test
+    @SneakyThrows
+    void givenEditPersonalInformationRequest_whenEditPersonalInformation_thenReturnUserResponse() {
+
+        String jsonRequest = objectMapper.writeValueAsString(UserTemplates.getEditPersonalInformationRequest());
+
+        when(userService.editPersonalInformation(any())).thenReturn(userResponse);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch(BASE_REQUEST_URL + "/personal-information")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(userResponse)));
+    }
 }
