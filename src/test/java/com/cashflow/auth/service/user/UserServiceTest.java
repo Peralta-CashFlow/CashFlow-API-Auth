@@ -76,6 +76,13 @@ class UserServiceTest {
     }
 
     @Test
+    void givenProfileNotFound_whenRegister_thenExceptionIsThrown() {
+        when(userRepository.findByEmailIgnoreCase(anyString())).thenReturn(Optional.empty());
+        when(profileService.getProfileByName(anyString())).thenReturn(null);
+        assertThrows(CashFlowException.class, () -> userService.register(baseRequest));
+    }
+
+    @Test
     @SneakyThrows
     void givenRegisteredEmailAndCorrectPassword_whenFindUserByEmailAndPassword_thenUserIsReturned() {
         String email = "email";
