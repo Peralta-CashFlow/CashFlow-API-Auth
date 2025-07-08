@@ -86,4 +86,13 @@ class UserControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(userResponse)));
     }
+
+    @Test
+    @SneakyThrows
+    void givenUserId_whenGetPersonalInformation_thenReturnUserResponse() {
+        when(userService.getUserInformation(any())).thenReturn(userResponse);
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_REQUEST_URL + "/personal-information/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(userResponse)));
+    }
 }
