@@ -1,37 +1,48 @@
 package com.cashflow.auth.service.profile;
 
-import com.cashflow.auth.config.BaseTest;
 import com.cashflow.auth.domain.entities.Profile;
+import com.cashflow.auth.domain.templates.entities.ProfileTemplates;
+import com.cashflow.auth.repository.profile.ProfileRepository;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
-class ProfileServiceTest extends BaseTest {
+@ExtendWith(MockitoExtension.class)
+class ProfileServiceTest {
 
-    private final ProfileService profileService;
+    @InjectMocks
+    private ProfileService profileService;
 
-    @Autowired
-    ProfileServiceTest(ProfileService profileService) {
-        this.profileService = profileService;
-    }
+    @Mock
+    private ProfileRepository profileRepository;
 
     @Test
     void givenExistingProfileName_whenGetProfileByName_thenProfileIsReturned() {
-        String profileName = "Basic";
 
-        Profile profile = profileService.getProfileByName(profileName);
+        String profileName = "Basic";
+        Profile profile = ProfileTemplates.getProfile();
+
+        when(profileRepository.findByNameIgnoreCase(profileName)).thenReturn(Optional.of(profile));
+
+        Profile response = profileService.getProfileByName(profileName);
 
         assertAll(() -> {
-            assertNotNull(profile);
-            assertEquals(profileName, profile.getName());
+            assertNotNull(response);
+            assertEquals(profile, response);
         });
     }
 
     @Test
     void givenInvalidProfileName_whenGetProfileByName_thenProfileIsNull() {
-        assertNull(profileService.getProfileByName("Invalid"));
+        String profileName = "Invalid";
+        when(profileRepository.findByNameIgnoreCase(profileName)).thenReturn(Optional.empty());
+        assertNull(profileService.getProfileByName(profileName));
     }
 }

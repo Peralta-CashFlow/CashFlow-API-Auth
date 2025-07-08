@@ -7,6 +7,7 @@ import com.cashflow.auth.service.user.IUserService;
 import com.cashflow.exception.core.CashFlowException;
 import com.cashflow.exception.core.domain.mapper.ExceptionResponseMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,8 +45,17 @@ public class CashFlowLoginFilter extends OncePerRequestFilter {
                     request.getParameter("password"),
                     locale
             );
+
             String jwtToken = iJwtService.generateJwtToken(user, locale);
             SecurityContextHolder.getContext().setAuthentication(UserMapper.mapToCashFlowAuthentication(user, jwtToken));
+
+            response.setContentType("application/json");
+            response.getWriter().write(
+                    new ObjectMapper()
+                            .registerModule(new JavaTimeModule())
+                            .writeValueAsString(UserMapper.mapToLoginResponse(user, jwtToken))
+            );
+
         } catch (CashFlowException exception) {
             response.setStatus(exception.getHttpStatusCode());
             response.setContentType("application/json");

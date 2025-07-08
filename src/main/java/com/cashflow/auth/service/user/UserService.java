@@ -1,5 +1,6 @@
 package com.cashflow.auth.service.user;
 
+import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.domain.entities.Profile;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,8 @@ import java.util.Optional;
 public class UserService implements IUserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
+
+    private static final String USER_NOT_FOUND = "User not found!";
 
     private final UserRepository userRepository;
 
@@ -91,7 +95,7 @@ public class UserService implements IUserService {
             log.info("User {} found!", user.getUsername());
             return user;
         } else {
-            log.error("User not found!");
+            log.error(USER_NOT_FOUND);
             throw new CashFlowException(
                     HttpStatus.UNAUTHORIZED.value(),
                     messageSource.getMessage("user.login.invalid.title", null, locale),
@@ -102,4 +106,43 @@ public class UserService implements IUserService {
         }
     }
 
+    @Override
+    @PreAuthorize("#baseRequest.request.userId == authentication.credentials.id")
+    public UserResponse editPersonalInformation(BaseRequest<EditPersonalInformationRequest> baseRequest) throws CashFlowException {
+        EditPersonalInformationRequest request = baseRequest.getRequest();
+        User user = findUserById(request.userId(), baseRequest.getLanguage());
+        log.info("Updating user personal information from request...");
+        UserMapper.editPersonalInformationFromRequest(user, request);
+        user = userRepository.save(user);
+        log.info("User personal information updated successfully.");
+        return UserMapper.mapToUserResponse(user);
+    }
+
+    @Override
+    @PreAuthorize("#baseRequest.request == authentication.credentials.id")
+    public UserResponse getUserInformation(BaseRequest<Long> baseRequest) throws CashFlowException {
+        User user = findUserById(baseRequest.getRequest(), baseRequest.getLanguage());
+        log.info("Mapping user to response...");
+        UserResponse userResponse = UserMapper.mapToUserResponse(user);
+        log.info("User information retrieved successfully.");
+        return userResponse;
+    }
+
+    private User findUserById(Long userId, Locale locale) throws CashFlowException {
+        log.info("Searching for user by ID: {}", userId);
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            log.info("User found!");
+            return user.get();
+        } else {
+            log.error(USER_NOT_FOUND);
+            throw new CashFlowException(
+                    HttpStatus.NOT_FOUND.value(),
+                    messageSource.getMessage("user.not.found", null, locale),
+                    messageSource.getMessage("user.not.found", new Object[]{userId}, locale),
+                    UserService.class.getName(),
+                    "findUserById"
+            );
+        }
+    }
 }

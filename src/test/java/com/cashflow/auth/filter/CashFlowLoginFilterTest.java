@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,6 +62,7 @@ class CashFlowLoginFilterTest {
         when(request.getLocale()).thenReturn(locale);
         when(request.getParameter(email)).thenReturn(email);
         when(request.getParameter(password)).thenReturn(password);
+        when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
         when(userService.findUserByEmailAndPassword(email, password, locale)).thenReturn(user);
         when(iJwtService.generateJwtToken(user, locale)).thenReturn(jwtToken);
 
@@ -77,6 +79,8 @@ class CashFlowLoginFilterTest {
             assertEquals(user.getAuthorities(), authentication.getAuthorities());
             assertTrue(authentication.isAuthenticated());
             verify(filterChain, times(1)).doFilter(request, response);
+            verify(response, times(1)).setContentType("application/json");
+            verify(response, times(1)).getWriter();
         });
     }
 

@@ -154,7 +154,7 @@
         <dependency>
             <groupId>com.peralta.cashflow</groupId>
             <artifactId>cashflow-auth</artifactId>
-            <version>0.0.2</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.peralta.cashflow</groupId>
@@ -164,7 +164,7 @@
         <dependency>
             <groupId>com.peralta.cashflow</groupId>
             <artifactId>cashflow-exceptions</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 
