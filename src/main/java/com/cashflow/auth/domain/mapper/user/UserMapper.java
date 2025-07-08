@@ -7,11 +7,7 @@ import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.domain.entities.Profile;
 import com.cashflow.auth.domain.entities.User;
 import com.cashflow.auth.utils.ImageUtils;
-import com.cashflow.exception.core.CashFlowException;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Base64;
 import java.util.Objects;
 

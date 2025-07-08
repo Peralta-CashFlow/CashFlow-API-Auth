@@ -1,5 +1,6 @@
 package com.cashflow.auth.service.user;
 
+import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.domain.entities.Profile;
@@ -23,8 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Locale;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -49,6 +49,8 @@ class UserServiceTest {
 
     private final BaseRequest<UserCreationRequest> baseRequest = UserTemplates.getBaseUserCreationRequest();
 
+    private final BaseRequest<EditPersonalInformationRequest> editPersonalInformationRequestBaseRequest = UserTemplates.getBaseEditPersonalInformationRequest();
+
     private final Profile profile = ProfileTemplates.getProfile();
 
     private final User user = UserTemplates.getUser();
@@ -65,6 +67,7 @@ class UserServiceTest {
         when(userRepository.findByEmailIgnoreCase(anyString())).thenReturn(Optional.empty());
         when(profileService.getProfileByName(anyString())).thenReturn(profile);
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        user.setAvatar(null);
         when(userRepository.save(any())).thenReturn(user);
 
         UserResponse expectedResponse = UserMapper.mapToUserResponse(user);
@@ -101,6 +104,62 @@ class UserServiceTest {
 
         assertThrows(CashFlowException.class, () -> userService.findUserByEmailAndPassword(email, password, Locale.getDefault()));
         verify(messageSource, times(2)).getMessage(anyString(), any(), any(Locale.class));
+    }
+
+    @Test
+    void givenInvalidUserId_whenEditPersonalInformation_thenExceptionIsThrown() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(CashFlowException.class, () -> userService.editPersonalInformation(editPersonalInformationRequestBaseRequest));
+    }
+
+    @Test
+    @SneakyThrows
+    void givenValidUserId_whenEditPersonalInformation_thenUserIsUpdated() {
+
+        EditPersonalInformationRequest request = editPersonalInformationRequestBaseRequest.getRequest();
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        UserResponse response = userService.editPersonalInformation(editPersonalInformationRequestBaseRequest);
+
+        assertAll(() -> {
+                    assertEquals(request.firstName(), response.firstName());
+                    assertEquals(request.lastName(), response.lastName());
+                    assertEquals(request.birthDay(), response.birthDay());
+                    assertEquals(request.taxNumber(), response.taxRegistration());
+                    assertNotNull(request.gender());
+                    assertEquals(request.gender().getDescription(), response.gender());
+                    assertEquals("", response.avatar());
+                }
+        );
+    }
+
+    @Test
+    @SneakyThrows
+    void givenNullValuesForNullableFields_whenEditPersonalInformation_thenUserIsUpdatedWithNulls() {
+
+        EditPersonalInformationRequest request = new EditPersonalInformationRequest(
+                1L,
+                "Vinicius",
+                "Peralta",
+                null,
+                null,
+                null,
+                null
+        );
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        UserResponse response = userService.editPersonalInformation(new BaseRequest<>(Locale.ENGLISH, request));
+
+        assertAll(() -> {
+            assertNull(response.gender());
+            assertNull(response.birthDay());
+            assertNull(response.taxRegistration());
+            assertEquals("", response.avatar());
+        });
     }
 
 }

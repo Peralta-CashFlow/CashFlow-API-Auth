@@ -66,4 +66,8 @@ public class UserTemplates {
                 ""
         );
     }
+
+    public static BaseRequest<EditPersonalInformationRequest> getBaseEditPersonalInformationRequest() {
+        return new BaseRequest<>(Locale.ENGLISH, getEditPersonalInformationRequest());
+    }
 }
