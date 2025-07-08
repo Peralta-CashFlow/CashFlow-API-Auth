@@ -3,6 +3,7 @@ package com.cashflow.auth.domain.mapper.user;
 import com.cashflow.auth.core.domain.authentication.CashFlowAuthentication;
 import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
+import com.cashflow.auth.domain.dto.response.LoginResponse;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.domain.entities.Profile;
 import com.cashflow.auth.domain.entities.User;
@@ -58,6 +59,18 @@ public class UserMapper {
         user.setBirthday(request.birthDay());
         user.setTaxNumber(request.taxNumber());
         user.setAvatar(ImageUtils.convertBase64ToByteArray(request.avatar()));
+    }
+
+    public static LoginResponse mapToLoginResponse(User user, String jwtToken) {
+        return new LoginResponse(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getAuthorities(),
+                jwtToken,
+                Objects.nonNull(user.getAvatar()) ? Base64.getEncoder().encodeToString(user.getAvatar()) : null
+        );
     }
 
 }

@@ -1,6 +1,5 @@
 package com.cashflow.auth.controller.user;
 
-import com.cashflow.auth.core.domain.authentication.CashFlowAuthentication;
 import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
@@ -12,7 +11,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,13 +43,12 @@ public class UserController implements IUserController {
 
     @Override
     @GetMapping("/login")
-    public CashFlowAuthentication login(
+    public void login(
             @RequestParam @NotEmpty String email,
             @RequestParam @NotEmpty String password,
             @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
     ) {
         log.info("User successfully logged in via CashFlowLoginFilter.");
-        return (CashFlowAuthentication) SecurityContextHolder.getContext().getAuthentication();
     }
 
     @Override

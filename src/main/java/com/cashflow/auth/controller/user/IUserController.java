@@ -1,8 +1,8 @@
 package com.cashflow.auth.controller.user;
 
-import com.cashflow.auth.core.domain.authentication.CashFlowAuthentication;
 import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
+import com.cashflow.auth.domain.dto.response.LoginResponse;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.exception.core.CashFlowException;
 import com.cashflow.exception.core.domain.dto.response.ExceptionResponse;
@@ -58,7 +58,7 @@ public interface IUserController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User logged successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = com.cashflow.auth.domain.dto.response.CashFlowAuthentication.class))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))
             ),
             @ApiResponse(responseCode = "401", description = "Email or password invalid",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
@@ -67,7 +67,7 @@ public interface IUserController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
             )
     })
-    CashFlowAuthentication login(
+    void login(
             @RequestParam @NotEmpty String email,
             @RequestParam @NotEmpty String password,
             @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
