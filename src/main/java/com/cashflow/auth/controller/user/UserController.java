@@ -61,4 +61,14 @@ public class UserController implements IUserController {
         return userService.editPersonalInformation(new BaseRequest<>(language, request));
     }
 
+    @Override
+    @GetMapping("/personal-information/{userId}")
+    public UserResponse getPersonalInformation(
+            @PathVariable("userId") Long userId,
+            @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
+    ) throws CashFlowException {
+        log.info("Received request to get personal information for user with ID: {}", userId);
+        return userService.getUserInformation(new BaseRequest<>(language, userId));
+    }
+
 }

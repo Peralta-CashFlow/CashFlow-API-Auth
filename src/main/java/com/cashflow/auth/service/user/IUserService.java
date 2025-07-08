@@ -17,4 +17,6 @@ public interface IUserService {
 
     UserResponse editPersonalInformation(BaseRequest<EditPersonalInformationRequest> baseRequest) throws CashFlowException;
 
+    UserResponse getUserInformation(BaseRequest<Long> baseRequest) throws CashFlowException;
+
 }

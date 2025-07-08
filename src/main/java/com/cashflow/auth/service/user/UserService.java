@@ -118,6 +118,16 @@ public class UserService implements IUserService {
         return UserMapper.mapToUserResponse(user);
     }
 
+    @Override
+    @PreAuthorize("#baseRequest.request == authentication.credentials.id")
+    public UserResponse getUserInformation(BaseRequest<Long> baseRequest) throws CashFlowException {
+        User user = findUserById(baseRequest.getRequest(), baseRequest.getLanguage());
+        log.info("Mapping user to response...");
+        UserResponse userResponse = UserMapper.mapToUserResponse(user);
+        log.info("User information retrieved successfully.");
+        return userResponse;
+    }
+
     private User findUserById(Long userId, Locale locale) throws CashFlowException {
         log.info("Searching for user by ID: {}", userId);
         Optional<User> user = userRepository.findById(userId);

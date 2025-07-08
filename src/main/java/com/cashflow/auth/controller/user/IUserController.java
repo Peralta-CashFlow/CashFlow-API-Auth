@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -101,6 +102,34 @@ public interface IUserController {
     })
     UserResponse editPersonalInformation(
             @Valid @RequestBody EditPersonalInformationRequest request,
+            @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
+    ) throws CashFlowException;
+
+    @Operation(
+            summary = "Get user personal information",
+            description = "Should return the personal information of the authenticated user.",
+            security = @SecurityRequirement(name = "Authorization"),
+            parameters = {
+                    @Parameter(name = "Accept-Language", description = "Language to be used on response messages", in = ParameterIn.HEADER, example = "en"),
+                    @Parameter(name = "Authorization", description = "JWT token", in = ParameterIn.HEADER, required = true, example = "JWT.TOKEN.HERE")
+            }
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User personal information retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))
+            ),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated user",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+            ),
+            @ApiResponse(responseCode = "403", description = "User not authorized to view personal information",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "User not found",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+            ),
+    })
+    UserResponse getPersonalInformation(
+            @PathVariable ("userId") Long userId,
             @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
     ) throws CashFlowException;
 
