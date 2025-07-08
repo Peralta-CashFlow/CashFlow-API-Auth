@@ -169,4 +169,18 @@ class UserServiceTest {
         });
     }
 
+    @Test
+    void givenInvalidUserId_whenGetUserInformation_thenExceptionIsThrown() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        assertThrows(CashFlowException.class, () -> userService.getUserInformation(new BaseRequest<>(Locale.ENGLISH, 1L)));
+    }
+
+    @Test
+    @SneakyThrows
+    void givenValidUserId_whenGetUserInformation_thenUserInformationIsReturned() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        UserResponse response = userService.getUserInformation(new BaseRequest<>(Locale.ENGLISH, 1L));
+        assertEquals(UserMapper.mapToUserResponse(user), response);
+    }
+
 }
