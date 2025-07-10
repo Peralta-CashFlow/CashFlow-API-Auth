@@ -128,7 +128,8 @@ public class UserService implements IUserService {
         return userResponse;
     }
 
-    private User findUserById(Long userId, Locale locale) throws CashFlowException {
+    @Override
+    public User findUserById(Long userId, Locale locale) throws CashFlowException {
         log.info("Searching for user by ID: {}", userId);
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {

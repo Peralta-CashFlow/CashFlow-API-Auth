@@ -19,4 +19,6 @@ public interface IUserService {
 
     UserResponse getUserInformation(BaseRequest<Long> baseRequest) throws CashFlowException;
 
+    User findUserById(Long userId, Locale locale) throws CashFlowException;
+
 }
