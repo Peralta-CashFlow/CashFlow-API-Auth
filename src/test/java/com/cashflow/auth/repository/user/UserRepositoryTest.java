@@ -1,14 +1,15 @@
 package com.cashflow.auth.repository.user;
 
-import com.cashflow.auth.config.BaseTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-class UserRepositoryTest extends BaseTest {
+@ActiveProfiles("test")
+class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
