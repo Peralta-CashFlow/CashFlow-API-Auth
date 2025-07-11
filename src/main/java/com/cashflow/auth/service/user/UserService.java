@@ -1,5 +1,6 @@
 package com.cashflow.auth.service.user;
 
+import com.cashflow.auth.domain.dto.request.DeleteAccountRequest;
 import com.cashflow.auth.domain.dto.request.EditPasswordRequest;
 import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
@@ -166,5 +167,23 @@ public class UserService implements IUserService {
         user.setPassword(passwordEncoder.encode(request.newPassword()));
         userRepository.save(user);
         log.info("User password updated successfully.");
+    }
+
+    @Override
+    @PreAuthorize("#baseRequest.request.userId == authentication.credentials.id")
+    public void deleteAccount(BaseRequest<DeleteAccountRequest> baseRequest) throws CashFlowException {
+        DeleteAccountRequest request = baseRequest.getRequest();
+        User user = findUserById(request.userId(), baseRequest.getLanguage());
+        log.info("Validating user password...");
+        UserValidator.validateUserPassword(
+                request.password(),
+                user.getPassword(),
+                passwordEncoder,
+                baseRequest.getLanguage(),
+                messageSource
+        );
+        log.info("Password validated successfully, deleting user account...");
+        userRepository.delete(user);
+        log.info("User account with ID: {} deleted successfully.", user.getId());
     }
 }

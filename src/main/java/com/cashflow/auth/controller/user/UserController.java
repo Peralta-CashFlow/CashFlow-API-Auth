@@ -1,5 +1,6 @@
 package com.cashflow.auth.controller.user;
 
+import com.cashflow.auth.domain.dto.request.DeleteAccountRequest;
 import com.cashflow.auth.domain.dto.request.EditPasswordRequest;
 import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
@@ -55,7 +56,7 @@ public class UserController implements IUserController {
     @Override
     @PatchMapping("/personal-information")
     public UserResponse editPersonalInformation(
-            @Valid @RequestPart("request") EditPersonalInformationRequest request,
+            @Valid @RequestBody EditPersonalInformationRequest request,
             @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
     ) throws CashFlowException {
         log.info("Received request to edit personal information for user with ID: {}", request.userId());
@@ -80,6 +81,16 @@ public class UserController implements IUserController {
     ) throws CashFlowException {
         log.info("Received request to change password for user with ID: {}", editPasswordRequest.userId());
         userService.changePassword(new BaseRequest<>(language, editPasswordRequest));
+    }
+
+    @Override
+    @DeleteMapping("/delete-account")
+    public void deleteAccount(
+            @Valid @RequestBody DeleteAccountRequest request,
+            @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
+    ) throws CashFlowException {
+        log.info("Received request to delete account for user with ID: {}", request.userId());
+        userService.deleteAccount(new BaseRequest<>(language, request));
     }
 
 }
