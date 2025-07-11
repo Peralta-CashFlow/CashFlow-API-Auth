@@ -39,4 +39,14 @@ public class FinancialProfileController implements IFinancialProfileController {
         return financialProfileService.editUserFinancialInformation(new BaseRequest<>(language, request));
     }
 
+    @Override
+    @GetMapping("/{userId}")
+    public FinancialInformationResponse getFinancialProfile(
+            @PathVariable("userId") Long userId,
+            @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
+    ) throws CashFlowException {
+        log.info("Received request to get financial profile for user with ID: {}", userId);
+        return financialProfileService.getUserFinancialInformation(new BaseRequest<>(language, userId));
+    }
+
 }

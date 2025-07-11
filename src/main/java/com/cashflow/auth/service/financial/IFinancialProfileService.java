@@ -9,4 +9,5 @@ public interface IFinancialProfileService {
 
     FinancialInformationResponse editUserFinancialInformation(BaseRequest<EditFinancialInformationRequest> baseRequest) throws CashFlowException;
 
+    FinancialInformationResponse getUserFinancialInformation(BaseRequest<Long> baseRequest) throws CashFlowException;
 }

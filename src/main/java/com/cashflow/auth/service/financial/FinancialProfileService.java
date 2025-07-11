@@ -49,4 +49,18 @@ public class FinancialProfileService implements IFinancialProfileService {
         log.info("Financial profile saved successfully for user with ID: {}", request.userId());
         return FinancialProfileMapper.toFinancialInformationResponse(financialProfile);
     }
+
+    @Override
+    @PreAuthorize("#baseRequest.request == authentication.credentials.id")
+    public FinancialInformationResponse getUserFinancialInformation(BaseRequest<Long> baseRequest) throws CashFlowException {
+        User user = iUserService.findUserById(baseRequest.getRequest(), baseRequest.getLanguage());
+        FinancialInformationResponse response = null;
+        if (Objects.nonNull(user.getProfile())) {
+            log.info("User has a financial profile, retrieving it...");
+            response = FinancialProfileMapper.toFinancialInformationResponse(user.getFinancialProfile());
+        } else {
+            log.info("User does not have a financial profile, returning null...");
+        }
+        return response;
+    }
 }
