@@ -3,10 +3,6 @@ package com.cashflow.auth.controller.financial;
 import com.cashflow.auth.config.BaseTest;
 import com.cashflow.auth.domain.dto.response.FinancialInformationResponse;
 import com.cashflow.auth.domain.templates.entities.FinancialProfileTemplates;
-import com.cashflow.auth.domain.templates.entities.UserTemplates;
-import com.cashflow.auth.repository.financial.FinancialProfileRepository;
-import com.cashflow.auth.repository.profile.ProfileRepository;
-import com.cashflow.auth.repository.user.UserRepository;
 import com.cashflow.auth.service.financial.IFinancialProfileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -57,6 +53,16 @@ class FinancialProfileControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(response)));
 
+    }
+
+    @Test
+    @SneakyThrows
+    void givenUserId_whenGetFinancialProfile_thenFinancialInformationResponseIsReturned() {
+        when(iFinancialProfileService.getUserFinancialInformation(any())).thenReturn(response);
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_REQUEST_URL + "/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(response)));
     }
 
 }
