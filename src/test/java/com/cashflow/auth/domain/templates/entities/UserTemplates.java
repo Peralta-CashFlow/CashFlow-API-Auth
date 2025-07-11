@@ -1,5 +1,6 @@
 package com.cashflow.auth.domain.templates.entities;
 
+import com.cashflow.auth.domain.dto.request.DeleteAccountRequest;
 import com.cashflow.auth.domain.dto.request.EditPasswordRequest;
 import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
@@ -82,5 +83,12 @@ public class UserTemplates {
 
     public static BaseRequest<EditPasswordRequest> getBaseEditPasswordRequest() {
         return new BaseRequest<>(Locale.ENGLISH, getEditPasswordRequest());
+    }
+
+    public static DeleteAccountRequest getDeleteAccountRequest() {
+        return new DeleteAccountRequest(
+                1L,
+                "Password123!"
+        );
     }
 }

@@ -99,4 +99,16 @@ class UserControllerTest extends BaseTest {
                 .content(jsonRequest))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
+
+    @Test
+    @SneakyThrows
+    void givenDeleteAccountRequest_whenDeleteAccount_thenReturnOk() {
+
+        String jsonRequest = objectMapper.writeValueAsString(UserTemplates.getDeleteAccountRequest());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(BASE_REQUEST_URL + "/delete-account")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
 }
