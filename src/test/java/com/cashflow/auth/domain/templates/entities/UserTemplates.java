@@ -1,5 +1,7 @@
 package com.cashflow.auth.domain.templates.entities;
 
+import com.cashflow.auth.domain.dto.request.DeleteAccountRequest;
+import com.cashflow.auth.domain.dto.request.EditPasswordRequest;
 import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
@@ -69,5 +71,28 @@ public class UserTemplates {
 
     public static BaseRequest<EditPersonalInformationRequest> getBaseEditPersonalInformationRequest() {
         return new BaseRequest<>(Locale.ENGLISH, getEditPersonalInformationRequest());
+    }
+
+    public static EditPasswordRequest getEditPasswordRequest() {
+        return new EditPasswordRequest(
+                1L,
+                "OldPassword123!",
+                "NewPassword123!"
+        );
+    }
+
+    public static BaseRequest<EditPasswordRequest> getBaseEditPasswordRequest() {
+        return new BaseRequest<>(Locale.ENGLISH, getEditPasswordRequest());
+    }
+
+    public static DeleteAccountRequest getDeleteAccountRequest() {
+        return new DeleteAccountRequest(
+                1L,
+                "Password123!"
+        );
+    }
+
+    public static BaseRequest<DeleteAccountRequest> getBaseDeleteAccountRequest() {
+        return new BaseRequest<>(Locale.ENGLISH, getDeleteAccountRequest());
     }
 }

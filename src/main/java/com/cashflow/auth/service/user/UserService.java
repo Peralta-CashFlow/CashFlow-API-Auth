@@ -1,5 +1,7 @@
 package com.cashflow.auth.service.user;
 
+import com.cashflow.auth.domain.dto.request.DeleteAccountRequest;
+import com.cashflow.auth.domain.dto.request.EditPasswordRequest;
 import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
@@ -7,6 +9,7 @@ import com.cashflow.auth.domain.entities.Profile;
 import com.cashflow.auth.domain.entities.User;
 import com.cashflow.auth.domain.mapper.user.UserMapper;
 import com.cashflow.auth.domain.validator.profile.ProfileValidator;
+import com.cashflow.auth.domain.validator.user.UserValidator;
 import com.cashflow.auth.repository.user.UserRepository;
 import com.cashflow.auth.service.profile.IProfileService;
 import com.cashflow.commons.core.dto.request.BaseRequest;
@@ -145,5 +148,42 @@ public class UserService implements IUserService {
                     "findUserById"
             );
         }
+    }
+
+    @Override
+    @PreAuthorize("#baseRequest.request.userId == authentication.credentials.id")
+    public void changePassword(BaseRequest<EditPasswordRequest> baseRequest) throws CashFlowException {
+        EditPasswordRequest request = baseRequest.getRequest();
+        User user = findUserById(request.userId(), baseRequest.getLanguage());
+        log.info("Validating user old password...");
+        UserValidator.validateUserPassword(
+                request.oldPassword(),
+                user.getPassword(),
+                passwordEncoder,
+                baseRequest.getLanguage(),
+                messageSource
+        );
+        log.info("Old password validated successfully, updating user password...");
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
+        userRepository.save(user);
+        log.info("User password updated successfully.");
+    }
+
+    @Override
+    @PreAuthorize("#baseRequest.request.userId == authentication.credentials.id")
+    public void deleteAccount(BaseRequest<DeleteAccountRequest> baseRequest) throws CashFlowException {
+        DeleteAccountRequest request = baseRequest.getRequest();
+        User user = findUserById(request.userId(), baseRequest.getLanguage());
+        log.info("Validating user password...");
+        UserValidator.validateUserPassword(
+                request.password(),
+                user.getPassword(),
+                passwordEncoder,
+                baseRequest.getLanguage(),
+                messageSource
+        );
+        log.info("Password validated successfully, deleting user account...");
+        userRepository.delete(user);
+        log.info("User account with ID: {} deleted successfully.", user.getId());
     }
 }

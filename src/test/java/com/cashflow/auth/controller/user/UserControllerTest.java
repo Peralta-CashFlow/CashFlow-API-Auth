@@ -87,4 +87,28 @@ class UserControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(userResponse)));
     }
+
+    @Test
+    @SneakyThrows
+    void givenEditPasswordRequest_whenChangePassword_thenReturnOk() {
+
+        String jsonRequest = objectMapper.writeValueAsString(UserTemplates.getEditPasswordRequest());
+
+        mockMvc.perform(MockMvcRequestBuilders.patch(BASE_REQUEST_URL + "/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @SneakyThrows
+    void givenDeleteAccountRequest_whenDeleteAccount_thenReturnOk() {
+
+        String jsonRequest = objectMapper.writeValueAsString(UserTemplates.getDeleteAccountRequest());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(BASE_REQUEST_URL + "/delete-account")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
 }

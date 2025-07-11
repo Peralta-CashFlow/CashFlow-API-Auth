@@ -1,5 +1,7 @@
 package com.cashflow.auth.service.user;
 
+import com.cashflow.auth.domain.dto.request.DeleteAccountRequest;
+import com.cashflow.auth.domain.dto.request.EditPasswordRequest;
 import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
@@ -54,6 +56,10 @@ class UserServiceTest {
     private final Profile profile = ProfileTemplates.getProfile();
 
     private final User user = UserTemplates.getUser();
+
+    private final BaseRequest<EditPasswordRequest> editPasswordRequestBaseRequest = UserTemplates.getBaseEditPasswordRequest();
+
+    private final BaseRequest<DeleteAccountRequest> deleteAccountRequestBaseRequest = UserTemplates.getBaseDeleteAccountRequest();
 
     @Test
     void givenDuplicatedUserCreationRequest_whenRegister_thenExceptionIsThrown() {
@@ -181,6 +187,42 @@ class UserServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         UserResponse response = userService.getUserInformation(new BaseRequest<>(Locale.ENGLISH, 1L));
         assertEquals(UserMapper.mapToUserResponse(user), response);
+    }
+
+    @Test
+    void givenInvalidPassword_whenChangePassword_thenExceptionIsThrown() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
+        assertThrows(CashFlowException.class, () -> userService.changePassword(editPasswordRequestBaseRequest));
+    }
+
+    @Test
+    @SneakyThrows
+    void givenValidPassword_whenChangePassword_thenPasswordIsChanged() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
+        when(passwordEncoder.encode(anyString())).thenReturn("newEncodedPassword");
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        userService.changePassword(editPasswordRequestBaseRequest);
+        assertEquals("newEncodedPassword", user.getPassword());
+        verify(userRepository, times(1)).save(any());
+    }
+
+    @Test
+    void givenInvalidPassword_whenDeletePassword_thenExceptionIsThrown() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
+        assertThrows(CashFlowException.class, () -> userService.deleteAccount(deleteAccountRequestBaseRequest));
+    }
+
+    @Test
+    @SneakyThrows
+    void givenValidPassword_whenDeleteAccount_thenAccountIsDeleted() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
+        userService.deleteAccount(deleteAccountRequestBaseRequest);
+        verify(userRepository, times(1)).delete(user);
     }
 
 }
