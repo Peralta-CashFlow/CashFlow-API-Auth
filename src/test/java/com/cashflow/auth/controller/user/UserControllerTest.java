@@ -3,8 +3,6 @@ package com.cashflow.auth.controller.user;
 import com.cashflow.auth.config.BaseTest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.domain.templates.entities.UserTemplates;
-import com.cashflow.auth.repository.profile.ProfileRepository;
-import com.cashflow.auth.repository.user.UserRepository;
 import com.cashflow.auth.service.user.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -29,12 +27,6 @@ class UserControllerTest extends BaseTest {
 
     @MockitoBean
     private IUserService userService;
-
-    @MockitoBean
-    private UserRepository userRepository;
-
-    @MockitoBean
-    private ProfileRepository profileRepository;
 
     private static final String BASE_REQUEST_URL = "/auth/user";
 

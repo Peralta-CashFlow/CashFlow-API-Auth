@@ -1,9 +1,13 @@
 package com.cashflow.auth.domain.templates.entities;
 
+import com.cashflow.auth.domain.dto.request.EditFinancialInformationRequest;
+import com.cashflow.auth.domain.dto.response.FinancialInformationResponse;
 import com.cashflow.auth.domain.entities.FinancialProfile;
 import com.cashflow.auth.domain.entities.User;
+import com.cashflow.commons.core.dto.request.BaseRequest;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 public class FinancialProfileTemplates {
 
@@ -15,6 +19,33 @@ public class FinancialProfileTemplates {
                 BigDecimal.valueOf(50000L),
                 BigDecimal.valueOf(20000L),
                 "Buy a house, save for retirement, travel the world"
+        );
+    }
+
+    public static FinancialInformationResponse financialInformationResponse() {
+        return new FinancialInformationResponse(
+                1L,
+                "Software Engineer",
+                BigDecimal.valueOf(50000L),
+                BigDecimal.valueOf(20000L),
+                "Save for retirement"
+        );
+    }
+
+    public static EditFinancialInformationRequest editFinancialInformationRequest() {
+        return new EditFinancialInformationRequest(
+                1L,
+                "Engineer",
+                BigDecimal.valueOf(50000L),
+                BigDecimal.valueOf(20000L),
+                "Buy a house"
+        );
+    }
+
+    public static BaseRequest<EditFinancialInformationRequest> baseEditFinancialInformationRequest() {
+        return new BaseRequest<>(
+                Locale.ENGLISH,
+                editFinancialInformationRequest()
         );
     }
 }

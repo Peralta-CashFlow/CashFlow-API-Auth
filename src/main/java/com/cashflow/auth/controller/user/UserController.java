@@ -57,7 +57,7 @@ public class UserController implements IUserController {
             @Valid @RequestPart("request") EditPersonalInformationRequest request,
             @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
     ) throws CashFlowException {
-        log.info("Received request to edit personal information...");
+        log.info("Received request to edit personal information for user with ID: {}", request.userId());
         return userService.editPersonalInformation(new BaseRequest<>(language, request));
     }
 
