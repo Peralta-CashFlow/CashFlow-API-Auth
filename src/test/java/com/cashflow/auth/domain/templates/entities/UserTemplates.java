@@ -91,4 +91,8 @@ public class UserTemplates {
                 "Password123!"
         );
     }
+
+    public static BaseRequest<DeleteAccountRequest> getBaseDeleteAccountRequest() {
+        return new BaseRequest<>(Locale.ENGLISH, getDeleteAccountRequest());
+    }
 }

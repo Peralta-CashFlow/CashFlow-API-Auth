@@ -1,5 +1,6 @@
 package com.cashflow.auth.service.user;
 
+import com.cashflow.auth.domain.dto.request.DeleteAccountRequest;
 import com.cashflow.auth.domain.dto.request.EditPasswordRequest;
 import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
@@ -57,6 +58,8 @@ class UserServiceTest {
     private final User user = UserTemplates.getUser();
 
     private final BaseRequest<EditPasswordRequest> editPasswordRequestBaseRequest = UserTemplates.getBaseEditPasswordRequest();
+
+    private final BaseRequest<DeleteAccountRequest> deleteAccountRequestBaseRequest = UserTemplates.getBaseDeleteAccountRequest();
 
     @Test
     void givenDuplicatedUserCreationRequest_whenRegister_thenExceptionIsThrown() {
@@ -187,7 +190,6 @@ class UserServiceTest {
     }
 
     @Test
-    @SneakyThrows
     void givenInvalidPassword_whenChangePassword_thenExceptionIsThrown() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
@@ -204,6 +206,23 @@ class UserServiceTest {
 
         userService.changePassword(editPasswordRequestBaseRequest);
         assertEquals("newEncodedPassword", user.getPassword());
+        verify(userRepository, times(1)).save(any());
+    }
+
+    @Test
+    void givenInvalidPassword_whenDeletePassword_thenExceptionIsThrown() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
+        assertThrows(CashFlowException.class, () -> userService.deleteAccount(deleteAccountRequestBaseRequest));
+    }
+
+    @Test
+    @SneakyThrows
+    void givenValidPassword_whenDeleteAccount_thenAccountIsDeleted() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
+        userService.deleteAccount(deleteAccountRequestBaseRequest);
+        verify(userRepository, times(1)).delete(user);
     }
 
 }
