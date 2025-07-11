@@ -79,4 +79,8 @@ public class UserTemplates {
                 "NewPassword123!"
         );
     }
+
+    public static BaseRequest<EditPasswordRequest> getBaseEditPasswordRequest() {
+        return new BaseRequest<>(Locale.ENGLISH, getEditPasswordRequest());
+    }
 }
