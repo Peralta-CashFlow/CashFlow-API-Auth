@@ -55,7 +55,7 @@ public class FinancialProfileService implements IFinancialProfileService {
     public FinancialInformationResponse getUserFinancialInformation(BaseRequest<Long> baseRequest) throws CashFlowException {
         User user = iUserService.findUserById(baseRequest.getRequest(), baseRequest.getLanguage());
         FinancialInformationResponse response = null;
-        if (Objects.nonNull(user.getProfile())) {
+        if (Objects.nonNull(user.getFinancialProfile())) {
             log.info("User has a financial profile, retrieving it...");
             response = FinancialProfileMapper.toFinancialInformationResponse(user.getFinancialProfile());
         } else {
