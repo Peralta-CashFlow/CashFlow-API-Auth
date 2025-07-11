@@ -1,5 +1,6 @@
 package com.cashflow.auth.controller.user;
 
+import com.cashflow.auth.domain.dto.request.EditPasswordRequest;
 import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.LoginResponse;
@@ -130,6 +131,32 @@ public interface IUserController {
     })
     UserResponse getPersonalInformation(
             @PathVariable ("userId") Long userId,
+            @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
+    ) throws CashFlowException;
+
+    @Operation(
+            summary = "Change password",
+            description = "Should change the password of the authenticated user.",
+            security = @SecurityRequirement(name = "Authorization"),
+            parameters = {
+                    @Parameter(name = "Accept-Language", description = "Language to be used on response messages", in = ParameterIn.HEADER, example = "en"),
+                    @Parameter(name = "Authorization", description = "JWT token", in = ParameterIn.HEADER, required = true, example = "JWT.TOKEN.HERE")
+            }
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Password changed successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid old password",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+            ),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated user",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+            ),
+            @ApiResponse(responseCode = "403", description = "User not authorized to change password",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionResponse.class))
+            )
+    })
+    void changePassword(
+            @Valid @RequestBody EditPasswordRequest editPasswordRequest,
             @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
     ) throws CashFlowException;
 

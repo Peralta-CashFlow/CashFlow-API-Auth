@@ -1,5 +1,6 @@
 package com.cashflow.auth.controller.user;
 
+import com.cashflow.auth.domain.dto.request.EditPasswordRequest;
 import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
@@ -69,6 +70,16 @@ public class UserController implements IUserController {
     ) throws CashFlowException {
         log.info("Received request to get personal information for user with ID: {}", userId);
         return userService.getUserInformation(new BaseRequest<>(language, userId));
+    }
+
+    @Override
+    @PatchMapping("/change-password")
+    public void changePassword(
+            @Valid @RequestBody EditPasswordRequest editPasswordRequest,
+            @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
+    ) throws CashFlowException {
+        log.info("Received request to change password for user with ID: {}", editPasswordRequest.userId());
+        userService.changePassword(new BaseRequest<>(language, editPasswordRequest));
     }
 
 }
