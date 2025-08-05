@@ -17,7 +17,7 @@ public class UserValidator {
     ) throws CashFlowException {
         if (!passwordEncoder.matches(password, userPassword)) {
             throw new CashFlowException(
-                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    HttpStatus.UNAUTHORIZED.value(),
                     messageSource.getMessage("user.old.password.incorrect.title", null, locale),
                     messageSource.getMessage("user.old.password.incorrect.message", null, locale),
                     UserValidator.class.getName(),
