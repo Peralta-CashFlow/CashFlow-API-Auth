@@ -12,6 +12,7 @@
 - [Personal Information](#personal-information)
   - [Edit Personal Information](#edit-personal-information)
   - [Get Personal Information](#get-personal-information)
+- [Change Password](#change-password)
 - [Containerization](#containerization)
 - [Observability](#observability)
 - [Environment Variables](#environment-variables)
@@ -149,6 +150,39 @@ flowchart
     style D stroke:#D50000
     style G stroke:#D50000
     style J stroke:#00C853
+```
+
+# Change Password
+
+Users can change their password by providing their current password and a new password. The system will validate
+the current password and update the user's password if the validation is successful.
+
+### Endpoint
+
+`[PATCH] /api/auth/user/change-password`
+
+### Flowchart
+
+```mermaid
+flowchart
+    A((START)) --> B
+    B{Request valid?} -- Yes --> C
+    B -- No --> D[Return 400 Bad Request]
+    C{User id from request = JWT id?} -- Yes --> F
+    C -- No --> E[Return 403 Forbidden]
+    F[Query user by userId] --> G
+    G{User found?} -- Yes --> H
+    G -- No --> I[Return 404 Not Found]
+    H{Current password correct?} -- Yes --> K
+    H -- No --> J[Return 401 Unauthorized]
+    K[Update user password] --> L[Return 200 OK]
+
+    style A stroke:#FF6D00
+    style D stroke:#D50000
+    style E stroke:#D50000
+    style I stroke:#D50000
+    style J stroke:#D50000
+    style L stroke:#00C853
 ```
 
 # Containerization
