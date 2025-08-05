@@ -1,6 +1,8 @@
 package com.cashflow.auth.controller.user;
 
-import com.cashflow.auth.core.domain.authentication.CashFlowAuthentication;
+import com.cashflow.auth.domain.dto.request.DeleteAccountRequest;
+import com.cashflow.auth.domain.dto.request.EditPasswordRequest;
+import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.service.user.IUserService;
@@ -11,7 +13,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,13 +45,52 @@ public class UserController implements IUserController {
 
     @Override
     @GetMapping("/login")
-    public CashFlowAuthentication login(
+    public void login(
             @RequestParam @NotEmpty String email,
             @RequestParam @NotEmpty String password,
             @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
     ) {
         log.info("User successfully logged in via CashFlowLoginFilter.");
-        return (CashFlowAuthentication) SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    @Override
+    @PatchMapping("/personal-information")
+    public UserResponse editPersonalInformation(
+            @Valid @RequestBody EditPersonalInformationRequest request,
+            @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
+    ) throws CashFlowException {
+        log.info("Received request to edit personal information for user with ID: {}", request.userId());
+        return userService.editPersonalInformation(new BaseRequest<>(language, request));
+    }
+
+    @Override
+    @GetMapping("/personal-information/{userId}")
+    public UserResponse getPersonalInformation(
+            @PathVariable("userId") Long userId,
+            @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
+    ) throws CashFlowException {
+        log.info("Received request to get personal information for user with ID: {}", userId);
+        return userService.getUserInformation(new BaseRequest<>(language, userId));
+    }
+
+    @Override
+    @PatchMapping("/change-password")
+    public void changePassword(
+            @Valid @RequestBody EditPasswordRequest editPasswordRequest,
+            @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
+    ) throws CashFlowException {
+        log.info("Received request to change password for user with ID: {}", editPasswordRequest.userId());
+        userService.changePassword(new BaseRequest<>(language, editPasswordRequest));
+    }
+
+    @Override
+    @DeleteMapping("/delete-account")
+    public void deleteAccount(
+            @Valid @RequestBody DeleteAccountRequest request,
+            @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
+    ) throws CashFlowException {
+        log.info("Received request to delete account for user with ID: {}", request.userId());
+        userService.deleteAccount(new BaseRequest<>(language, request));
     }
 
 }

@@ -1,13 +1,14 @@
 package com.cashflow.auth.domain.entities;
 
 import com.cashflow.auth.core.domain.enums.RoleEnum;
-import com.cashflow.auth.domain.enums.AccountType;
+import com.cashflow.auth.domain.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -31,12 +32,21 @@ public class User implements UserDetails, Serializable {
     private String email;
     @Column
     private String password;
-    @Column(name = "account_type")
-    @Enumerated(EnumType.STRING)
-    private AccountType accountType;
     @ManyToOne
     @JoinColumn(name = "profile", nullable = false)
     private Profile profile;
+    @Lob
+    @Column
+    private byte[] avatar;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+    @Column
+    private LocalDate birthday;
+    @Column(name = "tax_number", length = 14)
+    private String taxNumber;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private FinancialProfile financialProfile;
 
     @Override
     public List<RoleEnum> getAuthorities() {

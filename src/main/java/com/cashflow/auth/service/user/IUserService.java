@@ -1,5 +1,8 @@
 package com.cashflow.auth.service.user;
 
+import com.cashflow.auth.domain.dto.request.DeleteAccountRequest;
+import com.cashflow.auth.domain.dto.request.EditPasswordRequest;
+import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
 import com.cashflow.auth.domain.dto.request.UserCreationRequest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.domain.entities.User;
@@ -13,5 +16,15 @@ public interface IUserService {
     UserResponse register(BaseRequest<UserCreationRequest> baseRequest) throws CashFlowException;
 
     User findUserByEmailAndPassword(String email, String password, Locale locale) throws CashFlowException;
+
+    UserResponse editPersonalInformation(BaseRequest<EditPersonalInformationRequest> baseRequest) throws CashFlowException;
+
+    UserResponse getUserInformation(BaseRequest<Long> baseRequest) throws CashFlowException;
+
+    User findUserById(Long userId, Locale locale) throws CashFlowException;
+
+    void changePassword(BaseRequest<EditPasswordRequest> baseRequest) throws CashFlowException;
+
+    void deleteAccount(BaseRequest<DeleteAccountRequest> baseRequest) throws CashFlowException;
 
 }

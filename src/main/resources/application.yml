@@ -37,7 +37,6 @@ springdoc:
 # JWT Config
 
 jwt:
-  secret: ${JWT_SECRET}
   expiration: ${JWT_EXPIRATION}
 
 # Spring Config

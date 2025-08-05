@@ -1,12 +1,8 @@
 package com.cashflow.auth.controller.user;
 
 import com.cashflow.auth.config.BaseTest;
-import com.cashflow.auth.core.domain.authentication.CashFlowAuthentication;
 import com.cashflow.auth.domain.dto.response.UserResponse;
-import com.cashflow.auth.domain.templates.dto.CashFlowAuthenticationTemplates;
 import com.cashflow.auth.domain.templates.entities.UserTemplates;
-import com.cashflow.auth.repository.profile.ProfileRepository;
-import com.cashflow.auth.repository.user.UserRepository;
 import com.cashflow.auth.service.user.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -14,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -32,12 +27,6 @@ class UserControllerTest extends BaseTest {
 
     @MockitoBean
     private IUserService userService;
-
-    @MockitoBean
-    private UserRepository userRepository;
-
-    @MockitoBean
-    private ProfileRepository profileRepository;
 
     private static final String BASE_REQUEST_URL = "/auth/user";
 
@@ -69,13 +58,57 @@ class UserControllerTest extends BaseTest {
     @Test
     @SneakyThrows
     void givenEmailAndPassword_whenCashFlowAuthentication_thenReturnCashFlowAuthentication() {
-        CashFlowAuthentication cashFlowAuthentication = CashFlowAuthenticationTemplates.getCashFlowAuthentication();
-        SecurityContextHolder.getContext().setAuthentication(cashFlowAuthentication);
-
         mockMvc.perform(MockMvcRequestBuilders.get(BASE_REQUEST_URL + "/login")
                         .param("email", "vinicius-peralta@hotmail.com")
                         .param("password", "123456"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @SneakyThrows
+    void givenEditPersonalInformationRequest_whenEditPersonalInformation_thenReturnUserResponse() {
+
+        String jsonRequest = objectMapper.writeValueAsString(UserTemplates.getEditPersonalInformationRequest());
+
+        when(userService.editPersonalInformation(any())).thenReturn(userResponse);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch(BASE_REQUEST_URL + "/personal-information")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(cashFlowAuthentication)));
+                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(userResponse)));
+    }
+
+    @Test
+    @SneakyThrows
+    void givenUserId_whenGetPersonalInformation_thenReturnUserResponse() {
+        when(userService.getUserInformation(any())).thenReturn(userResponse);
+        mockMvc.perform(MockMvcRequestBuilders.get(BASE_REQUEST_URL + "/personal-information/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(userResponse)));
+    }
+
+    @Test
+    @SneakyThrows
+    void givenEditPasswordRequest_whenChangePassword_thenReturnOk() {
+
+        String jsonRequest = objectMapper.writeValueAsString(UserTemplates.getEditPasswordRequest());
+
+        mockMvc.perform(MockMvcRequestBuilders.patch(BASE_REQUEST_URL + "/change-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @SneakyThrows
+    void givenDeleteAccountRequest_whenDeleteAccount_thenReturnOk() {
+
+        String jsonRequest = objectMapper.writeValueAsString(UserTemplates.getDeleteAccountRequest());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(BASE_REQUEST_URL + "/delete-account")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

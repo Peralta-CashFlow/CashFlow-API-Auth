@@ -9,6 +9,11 @@
 
 - [User Registration](#user-registration)
 - [User Login](#user-login)
+- [Personal Information](#personal-information)
+  - [Edit Personal Information](#edit-personal-information)
+  - [Get Personal Information](#get-personal-information)
+- [Change Password](#change-password)
+- [Delete Account](#delete-account)
 - [Containerization](#containerization)
 - [Observability](#observability)
 - [Environment Variables](#environment-variables)
@@ -24,7 +29,11 @@ To register a new user, you need to provide the following information:
 
 After this the system will register the account if all the information is correct and return 
 
-#### Flowchart
+### Endpoint
+
+`[POST] /api/auth/user/register`
+
+### Flowchart
 
 ```mermaid
 flowchart
@@ -42,17 +51,21 @@ flowchart
     style H stroke:#00C853
 ```
 
-### User login
+# User login
 
 To log in a user, you need to provide the following information:
 
 - **email**: The email address of the user.
 - **password**: The password for the user account.
 
-After this the system will check if the email and password are correct and return a JWT token if they are. The token
-will be used to authenticate the user in all future requests.
+After this the system will check if the email and password are correct and return user information response which contains 
+a JWT token if they are. The token will be used to authenticate the user in all future requests.
 
-#### Flowchart
+### Endpoint
+
+`[GET] /api/auth/user/login`
+
+### Flowchart
 
 ```mermaid
 flowchart
@@ -63,12 +76,147 @@ flowchart
     D[Check password] --> F
     F{Password correct?} -- Yes --> G
     F -- No --> H[Return 401 Unauthorized]
-    G[Generate JWT token] --> J[Return 200 OK - With UserInformation]
+    G[Generate JWT token] --> J[Return 200 OK - With UserResponse]
 
     style A stroke:#FF6D00
     style E stroke:#D50000
     style H stroke:#D50000
     style J stroke:#00C853
+```
+
+# Personal Information
+
+User can define/update their personal information, such as:
+
+- **Name**;
+- **Gender**;
+- **Birthdate**;
+- **Tax number**;
+- **Avatar**;
+
+## Edit Personal Information
+
+Users can update their personal information by providing the information they want to change. The system will validate
+the information and update the user's profile accordingly.
+
+### Endpoint
+
+`[PATCH] /api/auth/user/personal-information`
+
+### Flowchart
+
+```mermaid
+flowchart
+    A((START)) --> B
+    B{Request valid?} -- Yes --> C
+    B -- No --> D[Return 400 Bad Request]
+    C{User id from request = JWT id?} -- Yes --> F
+    C -- No --> E[Return 403 Forbidden]
+    F[Query user by userId] --> G
+    G{User found?} -- Yes --> H
+    G -- No --> I[Return 404 Not Found]
+    H[Update user personal information] --> J
+    J[Return 200 OK - With UserResponse]
+
+    style A stroke:#FF6D00
+    style D stroke:#D50000
+    style E stroke:#D50000
+    style I stroke:#D50000
+    style J stroke:#00C853
+```
+
+## Get Personal Information
+
+Users can retrieve their personal information by providing their user ID. The system will validate the request and 
+return the user's personal information.
+
+### Endpoint
+
+`[GET] /api/auth/user/personal-information`
+
+### Flowchart
+
+```mermaid
+flowchart
+    A((START)) --> B
+    B{User id from request = JWT id?} -- Yes --> C
+    B -- No --> D[Return 403 Forbidden]
+    C[Query user by userId] --> E
+    E{User found?} -- Yes --> F
+    E -- No --> G[Return 404 Not Found]
+    F[Map user personal information] --> J
+    J[Return 200 OK - With UserResponse]
+    
+    style A stroke:#FF6D00
+    style D stroke:#D50000
+    style G stroke:#D50000
+    style J stroke:#00C853
+```
+
+# Change Password
+
+Users can change their password by providing their current password and a new password. The system will validate
+the current password and update the user's password if the validation is successful.
+
+### Endpoint
+
+`[PATCH] /api/auth/user/change-password`
+
+### Flowchart
+
+```mermaid
+flowchart
+    A((START)) --> B
+    B{Request valid?} -- Yes --> C
+    B -- No --> D[Return 400 Bad Request]
+    C{User id from request = JWT id?} -- Yes --> F
+    C -- No --> E[Return 403 Forbidden]
+    F[Query user by userId] --> G
+    G{User found?} -- Yes --> H
+    G -- No --> I[Return 404 Not Found]
+    H{Current password correct?} -- Yes --> K
+    H -- No --> J[Return 401 Unauthorized]
+    K[Update user password] --> L[Return 200 OK]
+
+    style A stroke:#FF6D00
+    style D stroke:#D50000
+    style E stroke:#D50000
+    style I stroke:#D50000
+    style J stroke:#D50000
+    style L stroke:#00C853
+```
+
+# Delete Account
+
+Users can delete their account by providing their user ID and password. The system will validate the request and 
+delete the user's account if the validation is successful.
+
+### Endpoint
+
+`[DELETE] /api/auth/user/delete-account`
+
+### Flowchart
+
+```mermaid
+flowchart
+    A((START)) --> B
+    B{Request valid?} -- Yes --> C
+    B -- No --> D[Return 400 Bad Request]
+    C{User id from request = JWT id?} -- Yes --> E
+    C -- No --> F[Return 403 Forbidden]
+    E[Query user by userId] --> G
+    G{User found?} -- Yes --> H
+    G -- No --> I[Return 404 Not Found]
+    H{Password correct?} -- Yes --> J
+    H -- No --> K[Return 401 Unauthorized]
+    J[Delete user account] --> L[Return 200 OK]
+    
+    style A stroke:#FF6D00
+    style D stroke:#D50000
+    style F stroke:#D50000
+    style I stroke:#D50000
+    style K stroke:#D50000
+    style L stroke:#00C853
 ```
 
 # Containerization
