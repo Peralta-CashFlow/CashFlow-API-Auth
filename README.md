@@ -13,6 +13,7 @@
   - [Edit Personal Information](#edit-personal-information)
   - [Get Personal Information](#get-personal-information)
 - [Change Password](#change-password)
+- [Delete Account](#delete-account)
 - [Containerization](#containerization)
 - [Observability](#observability)
 - [Environment Variables](#environment-variables)
@@ -182,6 +183,39 @@ flowchart
     style E stroke:#D50000
     style I stroke:#D50000
     style J stroke:#D50000
+    style L stroke:#00C853
+```
+
+# Delete Account
+
+Users can delete their account by providing their user ID and password. The system will validate the request and 
+delete the user's account if the validation is successful.
+
+### Endpoint
+
+`[DELETE] /api/auth/user/delete-account`
+
+### Flowchart
+
+```mermaid
+flowchart
+    A((START)) --> B
+    B{Request valid?} -- Yes --> C
+    B -- No --> D[Return 400 Bad Request]
+    C{User id from request = JWT id?} -- Yes --> E
+    C -- No --> F[Return 403 Forbidden]
+    E[Query user by userId] --> G
+    G{User found?} -- Yes --> H
+    G -- No --> I[Return 404 Not Found]
+    H{Password correct?} -- Yes --> J
+    H -- No --> K[Return 401 Unauthorized]
+    J[Delete user account] --> L[Return 200 OK]
+    
+    style A stroke:#FF6D00
+    style D stroke:#D50000
+    style F stroke:#D50000
+    style I stroke:#D50000
+    style K stroke:#D50000
     style L stroke:#00C853
 ```
 
