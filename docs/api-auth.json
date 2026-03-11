@@ -90,6 +90,80 @@
         }
       }
     },
+    "/auth/user/login": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Login a user",
+        "description": "Should login a user from the provided request data.",
+        "operationId": "login",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "description": "User e-mail",
+            "required": true,
+            "example": "vinicius-peralta@hotmail.com"
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "User password",
+            "required": true,
+            "example": "Password123!"
+          },
+          {
+            "name": "Accept-Language",
+            "in": "header",
+            "description": "Language to be used on response messages",
+            "example": "en"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User logged successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Email or password invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error while generation JWT token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/auth/user/personal-information": {
       "patch": {
         "tags": [
@@ -420,76 +494,6 @@
         ]
       }
     },
-    "/auth/user/login": {
-      "get": {
-        "tags": [
-          "User"
-        ],
-        "summary": "Login a user",
-        "description": "Should login a user from the provided request data.",
-        "operationId": "login",
-        "parameters": [
-          {
-            "name": "email",
-            "in": "query",
-            "description": "User e-mail",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "example": "vinicius-peralta@hotmail.com"
-          },
-          {
-            "name": "password",
-            "in": "query",
-            "description": "User password",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "example": "Password123!"
-          },
-          {
-            "name": "Accept-Language",
-            "in": "header",
-            "description": "Language to be used on response messages",
-            "example": "en"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User logged successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Email or password invalid",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ExceptionResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Error while generation JWT token",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ExceptionResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/auth/financial-profile/{userId}": {
       "get": {
         "tags": [
@@ -670,7 +674,7 @@
             "example": "vinicius-peralta@hotmail.com"
           },
           "password": {
-            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?\":{}|\u003C\u003E]).{8,}$",
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,}$",
             "type": "string",
             "description": "User password",
             "example": "Password123!"
@@ -755,6 +759,55 @@
         },
         "description": "CashFlow's Exception base response."
       },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User e-mail",
+            "example": "vinicius-peralta@hotmail.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password",
+            "example": "Password123!"
+          }
+        },
+        "description": "Login request"
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "authorities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "CASH_FLOW_BASICS"
+              ]
+            }
+          },
+          "jwtToken": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          }
+        }
+      },
       "EditPersonalInformationRequest": {
         "required": [
           "firstName",
@@ -825,7 +878,7 @@
             "example": "OldPassword123!"
           },
           "newPassword": {
-            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?\":{}|\u003C\u003E]).{8,}$",
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,}$",
             "type": "string",
             "description": "User new password",
             "example": "NewPassword123!"
@@ -856,13 +909,13 @@
             "minimum": 1,
             "type": "number",
             "description": "User income",
-            "example": 50000
+            "example": 50000.0
           },
           "expense": {
             "minimum": 1,
             "type": "number",
             "description": "User expense",
-            "example": 25000
+            "example": 25000.0
           },
           "goals": {
             "maxLength": 100,
@@ -891,12 +944,12 @@
           "income": {
             "type": "number",
             "description": "User income",
-            "example": 50000
+            "example": 50000.0
           },
           "expense": {
             "type": "number",
             "description": "User expense",
-            "example": 25000
+            "example": 25000.0
           },
           "goals": {
             "type": "string",
@@ -905,39 +958,6 @@
           }
         },
         "description": "User financial information response"
-      },
-      "LoginResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "authorities": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "CASH_FLOW_BASICS"
-              ]
-            }
-          },
-          "jwtToken": {
-            "type": "string"
-          },
-          "avatar": {
-            "type": "string"
-          }
-        }
       },
       "DeleteAccountRequest": {
         "required": [
