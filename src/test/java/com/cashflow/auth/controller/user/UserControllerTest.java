@@ -2,6 +2,7 @@ package com.cashflow.auth.controller.user;
 
 import com.cashflow.auth.config.BaseTest;
 import com.cashflow.auth.domain.dto.response.UserResponse;
+import com.cashflow.auth.domain.templates.dto.LoginTemplates;
 import com.cashflow.auth.domain.templates.entities.UserTemplates;
 import com.cashflow.auth.service.user.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,9 +59,10 @@ class UserControllerTest extends BaseTest {
     @Test
     @SneakyThrows
     void givenEmailAndPassword_whenCashFlowAuthentication_thenReturnCashFlowAuthentication() {
-        mockMvc.perform(MockMvcRequestBuilders.get(BASE_REQUEST_URL + "/login")
-                        .param("email", "vinicius-peralta@hotmail.com")
-                        .param("password", "123456"))
+        String jsonRequest = objectMapper.writeValueAsString(LoginTemplates.loginRequest());
+        mockMvc.perform(MockMvcRequestBuilders.post(BASE_REQUEST_URL + "/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 

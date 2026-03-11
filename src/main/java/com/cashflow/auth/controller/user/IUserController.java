@@ -1,9 +1,6 @@
 package com.cashflow.auth.controller.user;
 
-import com.cashflow.auth.domain.dto.request.DeleteAccountRequest;
-import com.cashflow.auth.domain.dto.request.EditPasswordRequest;
-import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
-import com.cashflow.auth.domain.dto.request.UserCreationRequest;
+import com.cashflow.auth.domain.dto.request.*;
 import com.cashflow.auth.domain.dto.response.LoginResponse;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.exception.core.CashFlowException;
@@ -17,11 +14,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Locale;
 
@@ -71,8 +66,7 @@ public interface IUserController {
             )
     })
     void login(
-            @RequestParam @NotEmpty String email,
-            @RequestParam @NotEmpty String password,
+            @RequestBody LoginRequest loginRequest,
             @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
     );
 
