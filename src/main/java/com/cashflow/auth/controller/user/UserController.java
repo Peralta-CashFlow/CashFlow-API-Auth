@@ -1,16 +1,12 @@
 package com.cashflow.auth.controller.user;
 
-import com.cashflow.auth.domain.dto.request.DeleteAccountRequest;
-import com.cashflow.auth.domain.dto.request.EditPasswordRequest;
-import com.cashflow.auth.domain.dto.request.EditPersonalInformationRequest;
-import com.cashflow.auth.domain.dto.request.UserCreationRequest;
+import com.cashflow.auth.domain.dto.request.*;
 import com.cashflow.auth.domain.dto.response.UserResponse;
 import com.cashflow.auth.service.user.IUserService;
 import com.cashflow.commons.core.dto.request.BaseRequest;
 import com.cashflow.exception.core.CashFlowException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
@@ -44,10 +40,9 @@ public class UserController implements IUserController {
     }
 
     @Override
-    @GetMapping("/login")
+    @PostMapping("/login")
     public void login(
-            @RequestParam @NotEmpty String email,
-            @RequestParam @NotEmpty String password,
+            @RequestBody LoginRequest loginRequest,
             @RequestHeader(name = "Accept-Language", required = false, defaultValue = "en") Locale language
     ) {
         log.info("User successfully logged in via CashFlowLoginFilter.");
