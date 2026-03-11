@@ -2,12 +2,15 @@ package com.cashflow.auth.filter;
 
 import com.cashflow.auth.core.domain.authentication.CashFlowAuthentication;
 import com.cashflow.auth.core.domain.authentication.CashFlowCredentials;
+import com.cashflow.auth.domain.dto.request.LoginRequest;
 import com.cashflow.auth.domain.entities.User;
 import com.cashflow.auth.domain.templates.entities.UserTemplates;
 import com.cashflow.auth.service.jwt.IJwtService;
 import com.cashflow.auth.service.user.IUserService;
 import com.cashflow.exception.core.CashFlowException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
@@ -19,7 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,11 +48,19 @@ class CashFlowLoginFilterTest {
     @Mock
     private FilterChain filterChain;
 
+    @Mock
+    private ServletInputStream servletInputStream;
+
+    @Mock
+    private ObjectMapper objectMapper;
+
     private final Locale locale = Locale.ENGLISH;
 
     private final String email = "email";
 
     private final String password = "password";
+
+    private final LoginRequest loginRequest = new LoginRequest(email, password);
 
     @Test
     @SneakyThrows
@@ -60,9 +70,9 @@ class CashFlowLoginFilterTest {
         User user = UserTemplates.getUser();
 
         when(request.getLocale()).thenReturn(locale);
-        when(request.getParameter(email)).thenReturn(email);
-        when(request.getParameter(password)).thenReturn(password);
-        when(response.getWriter()).thenReturn(new PrintWriter(new StringWriter()));
+        when(request.getInputStream()).thenReturn(servletInputStream);
+        when(objectMapper.readValue(servletInputStream, LoginRequest.class)).thenReturn(loginRequest);
+        when(response.getWriter()).thenReturn(mock(PrintWriter.class));
         when(userService.findUserByEmailAndPassword(email, password, locale)).thenReturn(user);
         when(iJwtService.generateJwtToken(user, locale)).thenReturn(jwtToken);
 
@@ -78,8 +88,7 @@ class CashFlowLoginFilterTest {
             assertEquals(user.getEmail(), credentials.email());
             assertEquals(user.getAuthorities(), authentication.getAuthorities());
             assertTrue(authentication.isAuthenticated());
-            verify(filterChain, times(1)).doFilter(request, response);
-            verify(response, times(1)).setContentType("application/json");
+            verify(response, times(1)).setContentType("application/json;charset=UTF-8");
             verify(response, times(1)).getWriter();
         });
     }
@@ -89,8 +98,8 @@ class CashFlowLoginFilterTest {
     void givenUserInvalidRequest_whenDoFilterInternal_thenExceptionIsThrown() {
 
         when(request.getLocale()).thenReturn(locale);
-        when(request.getParameter(email)).thenReturn(email);
-        when(request.getParameter(password)).thenReturn(password);
+        when(request.getInputStream()).thenReturn(servletInputStream);
+        when(objectMapper.readValue(servletInputStream, LoginRequest.class)).thenReturn(loginRequest);
         when(response.getWriter()).thenReturn(mock(PrintWriter.class));
         when(userService.findUserByEmailAndPassword(email, password, locale))
                 .thenThrow(new CashFlowException(
